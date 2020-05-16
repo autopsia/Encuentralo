@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "922587196898",
+    "firebase_url": "https://encuentralo-86073.firebaseio.com",
+    "project_id": "encuentralo-86073",
+    "storage_bucket": "encuentralo-86073.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:922587196898:android:093d4e67d3ce84948e5dbb",
+        "android_client_info": {
+          "package_name": "com.sectordefectuoso.encuentralo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "922587196898-j2ovncvki3b2h6m996te1rdddego18qq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sectordefectuoso.encuentralo",
+            "certificate_hash": "6a70c2de7cf0f57a80e6810cc70415a43f253e7d"
+          }
+        },
+        {
+          "client_id": "922587196898-v0daevg2i9ljjhco86iq637dmvkvvoaf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA56uXJFKl6Aey8ia1qVSxiZCSA9V1o25A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "922587196898-v0daevg2i9ljjhco86iq637dmvkvvoaf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
