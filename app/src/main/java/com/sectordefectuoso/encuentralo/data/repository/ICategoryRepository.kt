@@ -5,5 +5,5 @@ import com.sectordefectuoso.encuentralo.utils.ResourceState
 import kotlinx.coroutines.flow.Flow
 
 interface ICategoryRepository{
-    suspend fun getAll(): Flow<ResourceState<List<Category>>>
+    suspend fun getAll(): Flow<ResourceState<List<Category>>>?
 }
