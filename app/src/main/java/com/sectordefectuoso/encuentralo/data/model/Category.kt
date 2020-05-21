@@ -1,4 +1,4 @@
-package com.sectordefectuoso.encuentralo.model
+package com.sectordefectuoso.encuentralo.data.model
 
 class Category(
     name:String,
