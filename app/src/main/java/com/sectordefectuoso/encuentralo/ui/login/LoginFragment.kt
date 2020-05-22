@@ -1,23 +1,17 @@
 package com.sectordefectuoso.encuentralo.ui.login
 
-import android.graphics.drawable.Drawable
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 
 import com.sectordefectuoso.encuentralo.R
-import com.sectordefectuoso.encuentralo.R.drawable
+import com.sectordefectuoso.encuentralo.utils.Functions
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.fragment_login.*
 
@@ -48,7 +42,7 @@ class LoginFragment : Fragment() {
                         Toast.makeText(context, "Ingresó correctamente", Toast.LENGTH_SHORT).show()
                     }
                     else {
-                        Toast.makeText(context, "Fallo en la autenticación", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, Functions.getErrorAuthentication(task.exception), Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -63,21 +57,9 @@ class LoginFragment : Fragment() {
 
     fun validate(): Boolean {
         var valid = true
-        if(validateTextView(txtLoginEmail)) valid = false
-        if(validateTextView(txtLoginPassword)) valid = false
+        if(Functions.validateTextView(txtLoginEmail)) valid = false
+        if(Functions.validateTextView(txtLoginPassword)) valid = false
 
         return valid
-    }
-
-    fun validateTextView(textView: TextView): Boolean{
-        val text = textView.text.trim()
-
-        return if(text.isEmpty()){
-            textView.setBackgroundResource(drawable.bg_textview_error_rounded)
-            true
-        } else{
-            textView.setBackgroundResource(drawable.bg_textview_rounded)
-            false
-        }
     }
 }
