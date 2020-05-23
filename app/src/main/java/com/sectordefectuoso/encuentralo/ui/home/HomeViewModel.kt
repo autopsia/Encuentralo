@@ -14,7 +14,7 @@ import kotlin.coroutines.CoroutineContext
 class HomeViewModel ( private val repository: CategoryRepository ) : ViewModel(), CoroutineScope {
     private val job = Job()
     private val _categoriesTest = MutableLiveData<Category>().apply {
-        value = Category("oscar", 1)
+        value = Category(1, "oscar", ",", "", 1)
     }
     private val _text = MutableLiveData<String>().apply {
         value = "This is home Fragment"
