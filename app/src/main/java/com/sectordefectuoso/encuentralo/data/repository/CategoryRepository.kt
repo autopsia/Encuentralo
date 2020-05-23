@@ -17,7 +17,9 @@ class CategoryRepository : ICategoryRepository {
 
     override suspend fun getAll(): Flow<ResourceState<List<Category>>> = callbackFlow {
         val subscription = categoryRef.addSnapshotListener { snapshot, exception ->
-            offer(ResourceState.Success(snapshot!!.toObjects(Category::class.java)))
+            offer(
+                ResourceState.Success(snapshot!!.toObjects(Category::class.java))
+            )
 
             exception?.let {
                 offer(ResourceState.Failed(it.message.toString()))

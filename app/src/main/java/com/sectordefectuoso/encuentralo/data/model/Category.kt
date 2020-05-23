@@ -1,10 +1,9 @@
 package com.sectordefectuoso.encuentralo.data.model
 
-class Category(
-    name:String,
-    position:Int
-){
-    override fun toString(): String {
-        return super.toString()
-    }
-}
+data class Category(
+    var id:Int,
+    var name:String,
+    var color:String,
+    var imgSrc: String,
+    var position:Int
+)
