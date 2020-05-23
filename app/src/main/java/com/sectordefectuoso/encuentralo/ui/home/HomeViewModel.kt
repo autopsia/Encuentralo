@@ -44,7 +44,7 @@ class HomeViewModel ( private val repository: CategoryRepository ) : ViewModel()
     val categories: LiveData<ResourceState<List<Category>>>
         get() = _categories
 */
-    
+
     val category: LiveData<Category> = _categoriesTest
     val text: LiveData<String> = _text
     override val coroutineContext: CoroutineContext

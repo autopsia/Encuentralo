@@ -4,11 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.TextView
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,9 +11,9 @@ import com.sectordefectuoso.encuentralo.R
 import com.sectordefectuoso.encuentralo.data.model.Category
 import com.sectordefectuoso.encuentralo.ui.home.adapter.CategoriesAdapter
 import com.sectordefectuoso.encuentralo.utils.BaseFragment
+import com.sectordefectuoso.encuentralo.utils.GridSpacingDecoration
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import java.util.*
-import kotlin.collections.ArrayList
+
 
 class HomeFragment : BaseFragment() {
 
@@ -34,13 +29,23 @@ class HomeFragment : BaseFragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
+        /*
         homeViewModel =
               ViewModelProvider(this).get(HomeViewModel::class.java)
+
+         */
         val root = inflater.inflate(R.layout.fragment_home, container, false)
 
         var categories: ArrayList<Category> = arrayListOf(
-            Category("Plomero", 1),
-            Category("Electricista", 2)
+            Category(1, "Reparacion", "", "", 1),
+            Category(2, "Belleza", "", "",  2),
+            Category(3, "Alimentacion", "", "", 2),
+            Category(4, "Educacion", "", "", 2),
+            Category(5, "Musica", "", "", 2),
+            Category(6, "Diseño", "", "", 2),
+            Category(7, "Programación", "", "", 2),
+            Category(8, "Escritura", "", "", 2),
+            Category(9, "Video", "", "", 2)
         )
 
         val rvCategories: RecyclerView = root.findViewById(R.id.rvCategories)
@@ -48,7 +53,8 @@ class HomeFragment : BaseFragment() {
         rvCategories.adapter = rvAdapter
         rvCategories.layoutManager = GridLayoutManager(this.context, 3, LinearLayoutManager.VERTICAL, false)
 
-        categories
+        val spacingInPixels = resources.getDimensionPixelSize(R.dimen.default_padding)
+        rvCategories.addItemDecoration(GridSpacingDecoration(3 , spacingInPixels, true, 0))
 
         /*
         homeViewModel.text.observe(viewLifecycleOwner, Observer {
