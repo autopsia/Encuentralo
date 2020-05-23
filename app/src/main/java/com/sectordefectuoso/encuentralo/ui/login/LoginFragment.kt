@@ -42,7 +42,9 @@ class LoginFragment : Fragment() {
                         Toast.makeText(context, "Ingresó correctamente", Toast.LENGTH_SHORT).show()
                     }
                     else {
-                        Toast.makeText(context, Functions.getErrorAuthentication(task.exception), Toast.LENGTH_SHORT).show()
+                        val title = "Alerta"
+                        val message = Functions.getErrorAuthentication(task.exception)
+                        Functions.createDialog(requireContext(), R.layout.alert_dialog_1, title, message, null)
                     }
                 }
             }

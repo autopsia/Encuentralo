@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 
@@ -41,11 +40,18 @@ class RecoverFragment : Fragment() {
                 val email = txtRecoverEmail.text.trim().toString()
                 auth.sendPasswordResetEmail(email).addOnCompleteListener{ task ->
                     if (task.isSuccessful) {
-                        Toast.makeText(context, "Se envió un mensaje a su correo", Toast.LENGTH_SHORT).show()
-                        nav_login_fragment.findNavController().popBackStack(R.id.loginFragment, false)
+                        val title = "Recuperación"
+                        val message = "Se envió el mensaje a su correo"
+                        val callbackOk: () -> Unit = {
+                            nav_login_fragment.findNavController().popBackStack(R.id.loginFragment, false)
+                        }
+
+                        Functions.createDialog(requireContext(), R.layout.alert_dialog_1, title, message, callbackOk)
                     }
                     else{
-                        Toast.makeText(context, Functions.getErrorAuthentication(task.exception), Toast.LENGTH_SHORT).show()
+                        val title = "Alerta"
+                        val message = Functions.getErrorAuthentication(task.exception)
+                        Functions.createDialog(requireContext(), R.layout.alert_dialog_1, title, message, null)
                     }
                 }
             }
