@@ -9,10 +9,15 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.sectordefectuoso.encuentralo.R
+import com.sectordefectuoso.encuentralo.utils.BaseFragment
 
-class HomeFragment : Fragment() {
+class HomeFragment : BaseFragment() {
 
     private lateinit var homeViewModel: HomeViewModel
+    override val TAG: String
+        get() = "HomeFragment"
+
+    override fun getLayout(): Int = R.layout.fragment_home
 
     override fun onCreateView(
             inflater: LayoutInflater,

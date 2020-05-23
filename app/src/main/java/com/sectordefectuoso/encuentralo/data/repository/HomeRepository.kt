@@ -1,5 +1,5 @@
 package com.sectordefectuoso.encuentralo.data.repository
 
-class HomeRepository{
+class HomeRepository( categoryRepository: CategoryRepository ){
 
 }
