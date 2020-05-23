@@ -49,7 +49,7 @@ class HomeFragment : BaseFragment() {
         )
 
         val rvCategories: RecyclerView = root.findViewById(R.id.rvCategories)
-        val rvAdapter = CategoriesAdapter(categories)
+        val rvAdapter = CategoriesAdapter(categories, requireContext())
         rvCategories.adapter = rvAdapter
         rvCategories.layoutManager = GridLayoutManager(this.context, 3, LinearLayoutManager.VERTICAL, false)
 

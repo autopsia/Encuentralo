@@ -18,8 +18,7 @@ class SplashActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
 
         Thread.sleep(2000)
-        var intent :Intent
-        intent = if (auth.currentUser != null) {
+        var intent :Intent = if (auth.currentUser != null) {
             Intent(applicationContext, MainActivity::class.java)
         } else{
             Intent(applicationContext, LoginActivity::class.java)
