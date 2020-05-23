@@ -18,12 +18,13 @@ class SplashActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
 
         Thread.sleep(2000)
-        if (auth.currentUser != null) {
-            Toast.makeText(applicationContext, "Ya se encuentra logueado, cerrar sesión", Toast.LENGTH_SHORT).show()
-            auth.signOut()
+        var intent :Intent
+        intent = if (auth.currentUser != null) {
+            Intent(applicationContext, MainActivity::class.java)
+        } else{
+            Intent(applicationContext, LoginActivity::class.java)
         }
 
-        val intent = Intent(applicationContext, LoginActivity::class.java)
         startActivity(intent)
         finish()
     }
