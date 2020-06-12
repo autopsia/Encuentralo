@@ -129,7 +129,7 @@ class RegisterUserFragment : Fragment() {
                 task.result?.user?.uid?.let { createUser(it, user) }
             }
             else{
-                showAlert(Functions.AUTH_FAIL)
+                Functions.showAlert(requireActivity(), alertDialog, "Atención", Functions.AUTH_FAIL)
             }
         }
     }
@@ -146,22 +146,16 @@ class RegisterUserFragment : Fragment() {
 
         db.collection("users").document(key).set(userMap).addOnCompleteListener { task ->
             if(task.isSuccessful){
-                Thread.sleep(1500)
                 alertDialog.dismiss()
+                Thread.sleep(1500)
                 val intent = Intent(requireContext(), MainActivity::class.java)
                 startActivity(intent)
                 requireActivity().finish()
             }
             else{
-                showAlert(Functions.DB_FAIL)
+                Functions.showAlert(requireActivity(), alertDialog, "Atención", Functions.DB_FAIL)
             }
         }
-    }
-
-    private fun showAlert(message: String){
-        Thread.sleep(1500)
-        alertDialog.dismiss()
-        Functions.createDialog(requireContext(), R.layout.alert_dialog_1, "Atención", message, null)!!
     }
 
     inner class AsyncTaskHandler : AsyncTask<String, String, String>() {

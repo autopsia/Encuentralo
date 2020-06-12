@@ -195,5 +195,11 @@ class Functions {
 
             dpd.show()
         }
+
+        fun showAlert(contex: Context, alertDialog: AlertDialog, title: String, message: String){
+            alertDialog.dismiss()
+            Thread.sleep(1500)
+            createDialog(contex, R.layout.alert_dialog_1, title, message, null)!!
+        }
     }
 }
