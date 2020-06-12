@@ -1,5 +1,6 @@
 package com.sectordefectuoso.encuentralo.ui.login
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -24,6 +25,7 @@ class LoginFragment : Fragment() {
 
     private lateinit var viewModel: LoginViewModel
     private lateinit var auth: FirebaseAuth
+    private lateinit var alertDialog: AlertDialog
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_login, container, false)
@@ -36,20 +38,10 @@ class LoginFragment : Fragment() {
 
         btnLogin.setOnClickListener {
             if(validate()){
+                alertDialog = Functions.createDialog(requireContext(), R.layout.alert_dialog_2, "Iniciando sesión", "", null)!!
                 val email = txtLoginEmail.text.trim().toString()
-                val password = txtLoginPassword.text.trim().toString()
-                auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(){ task ->
-                    if (task.isSuccessful) {
-                        val intent = Intent(requireContext(), MainActivity::class.java)
-                        startActivity(intent)
-                        requireActivity().finish()
-                    }
-                    else {
-                        val title = "Alerta"
-                        val message = Functions.getErrorAuthentication(task.exception)
-                        Functions.createDialog(requireContext(), R.layout.alert_dialog_1, title, message, null)
-                    }
-                }
+                val password = txtLoginPassword.text.toString()
+                login(email, password)
             }
         }
         lblLoginRecover.setOnClickListener{
@@ -60,6 +52,20 @@ class LoginFragment : Fragment() {
         }
     }
 
+    fun login(email: String, password: String) {
+        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(){ task ->
+            if (task.isSuccessful) {
+                alertDialog.dismiss()
+                Thread.sleep(1000)
+                val intent = Intent(requireContext(), MainActivity::class.java)
+                startActivity(intent)
+                requireActivity().finish()
+            }
+            else {
+                Functions.showAlert(requireContext(), alertDialog, "Atención", Functions.getErrorAuthentication(task.exception))
+            }
+        }
+    }
     fun validate(): Boolean {
         var valid = true
         if(Functions.validateTextView(txtLoginEmail)) valid = false

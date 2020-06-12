@@ -36,23 +36,27 @@ class RecoverFragment : Fragment() {
         auth = FirebaseAuth.getInstance()
 
         btnRecoverSend.setOnClickListener {
+            Functions.closeKeyBoard(requireActivity(), requireView())
             if(validate()){
                 val email = txtRecoverEmail.text.trim().toString()
                 auth.sendPasswordResetEmail(email).addOnCompleteListener{ task ->
+                    var title = ""
+                    var message = ""
+                    var callbackOk: (() -> Unit)? = null
+
                     if (task.isSuccessful) {
-                        val title = "Recuperación"
-                        val message = "Se envió el mensaje a su correo"
-                        val callbackOk: () -> Unit = {
+                        title = "Recuperación"
+                        message = "Se envió el mensaje a su correo"
+                        callbackOk = {
                             nav_login_fragment.findNavController().popBackStack(R.id.loginFragment, false)
                         }
-
-                        Functions.createDialog(requireContext(), R.layout.alert_dialog_1, title, message, callbackOk)
                     }
                     else{
-                        val title = "Alerta"
-                        val message = Functions.getErrorAuthentication(task.exception)
-                        Functions.createDialog(requireContext(), R.layout.alert_dialog_1, title, message, null)
+                        title = "Alerta"
+                        message = Functions.getErrorAuthentication(task.exception)
                     }
+
+                    Functions.createDialog(requireContext(), R.layout.alert_dialog_1, title, message, callbackOk)
                 }
             }
         }

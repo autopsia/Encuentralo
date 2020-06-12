@@ -1,14 +1,16 @@
 package com.sectordefectuoso.encuentralo.data.model
 
-class User(
-    email: String,
-    password: String,
-    document: String,
-    names: String,
-    lastNames: String,
-    birthdate:String
-) {
+import java.util.*
+
+class User{
+    var document: String = ""
+    var names: String = ""
+    var lastNames: String = ""
+    var birthdate: Date = Date()
+    var phone: String = ""
+    var email: String = ""
+
     override fun toString(): String {
-        return super.toString()
+        return "User(document='$document', names='$names', lastNames='$lastNames', birthdate='$birthdate', phone='$phone', email='$email')"
     }
 }
