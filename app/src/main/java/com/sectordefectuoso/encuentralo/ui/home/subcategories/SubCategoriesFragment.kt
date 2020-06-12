@@ -16,8 +16,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 
 class SubCategoriesFragment : BaseFragment() {
-
-    @ExperimentalCoroutinesApi
     private lateinit var homeViewModel: SubCategoriesViewModel
     override val TAG: String
         get() = "HomeFragment"

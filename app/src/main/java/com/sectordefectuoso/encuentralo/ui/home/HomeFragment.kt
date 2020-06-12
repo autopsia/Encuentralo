@@ -20,19 +20,14 @@ import com.sectordefectuoso.encuentralo.utils.GridSpacingDecoration
 import com.sectordefectuoso.encuentralo.utils.ResourceState
 import com.sectordefectuoso.encuentralo.viewmodel.HomeViewModelFactory
 import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-
 
 class HomeFragment : BaseFragment() {
-
-    @ExperimentalCoroutinesApi
     private val homeViewModel by lazy { ViewModelProvider(this,HomeViewModelFactory(UseCaseImpl(CategoryRepository()))).get(HomeViewModel::class.java) }
     override val TAG: String
         get() = "HomeFragment"
 
     override fun getLayout(): Int = R.layout.fragment_home
 
-    @ExperimentalCoroutinesApi
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -73,7 +68,6 @@ class HomeFragment : BaseFragment() {
         return root
     }
 
-    @ExperimentalCoroutinesApi
     private fun observeData(){
         homeViewModel.getCategorias.observe(viewLifecycleOwner, Observer { result ->
             when(result){
