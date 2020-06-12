@@ -9,8 +9,9 @@ class User{
     var birthdate: Date = Date()
     var phone: String = ""
     var email: String = ""
+    var service: Service? = null
 
     override fun toString(): String {
-        return "User(document='$document', names='$names', lastNames='$lastNames', birthdate='$birthdate', phone='$phone', email='$email')"
+        return "User(document='$document', names='$names', lastNames='$lastNames', birthdate=$birthdate, phone='$phone', email='$email', service=$service)"
     }
 }
