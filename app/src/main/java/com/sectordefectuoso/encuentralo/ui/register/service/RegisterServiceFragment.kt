@@ -29,7 +29,7 @@ class RegisterServiceFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(RegisterServiceViewModel::class.java)
         // TODO: Use the ViewModel
-        txtPrueba.text = arguments?.getString("user")
+
     }
 
 }

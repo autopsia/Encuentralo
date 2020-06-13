@@ -104,8 +104,8 @@ class RegisterUserFragment : Fragment() {
         if (Functions.validateTextView(txtUserPassword)) valid = false
 
         if (Functions.validateTextView(txtUserDocument, 8)) return showNotification("Validación de Campos", "Ingrese un documento válido")
-        if (Functions.validateTextView(txtUserPhone, 9)) return showNotification("Validación de Campos", "Ingrese un celular válido")
         if (Functions.validateTextViewDate(txtUserBirthdate, Date(),6570)) return showNotification("Validación de Campos", "Debes ser mayor de edad")
+        if (Functions.validateTextView(txtUserPhone, 9)) return showNotification("Validación de Campos", "Ingrese un celular válido")
         if (Functions.validateTextViewEmail(txtUserEmail)) return showNotification("Validación de Campos", "Ingrese un email válido")
         if (Functions.validateTextView(txtUserPassword, 6)) return showNotification("Validación de Campos", "La contraseña debe tener mínimo 6 caracteres")
         return valid

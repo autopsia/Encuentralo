@@ -19,16 +19,24 @@
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.sectordefectuoso.encuentralo.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
-
-    <fragment
         android:id="@+id/navigation_notifications"
         android:name="com.sectordefectuoso.encuentralo.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notifications" />
+    <fragment
+        android:id="@+id/navigation_account"
+        android:name="com.sectordefectuoso.encuentralo.ui.profile.account.AccountFragment"
+        android:label="@string/title_account"
+        tools:layout="@layout/fragment_account">
+        <action
+            android:id="@+id/action_navigation_account_to_navigation_profile"
+            app:destination="@id/navigation_profile" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="com.sectordefectuoso.encuentralo.ui.profile.edit.ProfileFragment"
+        android:label="@string/title_account"
+        tools:layout="@layout/fragment_profile" />
     <fragment
         android:id="@+id/subCategoryFragment"
         android:name="com.sectordefectuoso.encuentralo.ui.home.subcategories.SubCategoryFragment"
