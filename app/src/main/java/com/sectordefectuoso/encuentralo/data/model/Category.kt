@@ -6,13 +6,13 @@ data class Category(
     @DocumentId
     var documentId:String = "",
     var name:String = "",
-    var color:String = "",
+    var color:String = "#FFFFFF",
     var imgSrc: String = "",
     var position:Int = 0,
-    var subCategories: List<SubCategories> = listOf()
+    var subCategories: List<SubCategory> = listOf()
 )
 
-data class SubCategories(
+data class SubCategory(
     @DocumentId
     var documentId: String = "",
     var name: String = "",
