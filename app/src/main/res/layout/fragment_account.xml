@@ -67,26 +67,6 @@
 
                     </androidx.cardview.widget.CardView>
 
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        app:cardBackgroundColor="#FF0000"
-                        app:cardCornerRadius="20dp"
-                        app:contentPadding="6dp"
-                        app:layout_constraintBottom_toBottomOf="@+id/cardView"
-                        app:layout_constraintEnd_toEndOf="@+id/cardView">
-
-                        <ImageView
-                            android:id="@+id/imageView3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="#00FFFFFF"
-                            android:backgroundTint="#FFFFFF"
-                            android:src="@android:drawable/ic_menu_camera"
-                            android:tint="#FFFFFF" />
-
-                    </androidx.cardview.widget.CardView>
-
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.Guideline

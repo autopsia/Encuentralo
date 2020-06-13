@@ -19,8 +19,8 @@
     <fragment
         android:id="@+id/navigation_account"
         android:name="com.sectordefectuoso.encuentralo.ui.profile.account.AccountFragment"
-        android:label="Perfil"
-        tools:layout="@layout/fragment_account" >
+        android:label="@string/title_account"
+        tools:layout="@layout/fragment_account">
         <action
             android:id="@+id/action_navigation_account_to_navigation_profile"
             app:destination="@id/navigation_profile" />
@@ -28,6 +28,6 @@
     <fragment
         android:id="@+id/navigation_profile"
         android:name="com.sectordefectuoso.encuentralo.ui.profile.edit.ProfileFragment"
-        android:label="fragment_profile"
+        android:label="@string/title_account"
         tools:layout="@layout/fragment_profile" />
 </navigation>

@@ -1,8 +1,9 @@
 package com.sectordefectuoso.encuentralo.data.model
 
+import java.io.Serializable
 import java.util.*
 
-class User{
+class User : Serializable{
     var document: String = ""
     var names: String = ""
     var lastNames: String = ""
