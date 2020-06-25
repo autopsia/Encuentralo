@@ -47,4 +47,18 @@ class CategoryRepository : ICategoryRepository {
             cancel()
         }
     }
+
+    fun getSubCategoriesByCategory(id:String): Flow<ResourceState<List<SubCategory>>> = callbackFlow {
+        val subscription = categoryRef.document(id).collection("subcategories").get().addOnSuccessListener { document ->
+            offer(
+                ResourceState.Success(document!!.toObjects(SubCategory::class.java))
+            )
+        }.addOnFailureListener {
+            offer(ResourceState.Failed(it.message.toString()))
+            cancel(it.message.toString())
+        }
+        awaitClose {
+            cancel()
+        }
+    }
 }

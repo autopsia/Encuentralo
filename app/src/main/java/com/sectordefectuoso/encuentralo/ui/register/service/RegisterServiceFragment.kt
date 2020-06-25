@@ -2,20 +2,21 @@ package com.sectordefectuoso.encuentralo.ui.register.service
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.google.firestore.v1.StructuredQuery.Order
 import com.sectordefectuoso.encuentralo.R
 import com.sectordefectuoso.encuentralo.data.model.Category
 import com.sectordefectuoso.encuentralo.data.model.SubCategory
 import com.sectordefectuoso.encuentralo.utils.ResourceState
 import kotlinx.android.synthetic.main.fragment_register_service.*
+
 
 class RegisterServiceFragment : Fragment() {
 
@@ -81,21 +82,23 @@ class RegisterServiceFragment : Fragment() {
 
     private fun loadSubcategories(idCategory: String){
         registerServiceViewModel.idCategory = idCategory
-        registerServiceViewModel.getSubCategories.observe(viewLifecycleOwner, Observer { result ->
+        registerServiceViewModel.getSubCategories.observeForever { result ->
             when (result){
                 is ResourceState.Loading -> {
-                    Log.i("subcategorias ", "Cargando")
+                    Log.i("load ", "Cargando")
                 }
                 is ResourceState.Success -> {
-                    subcategoryList = result.data
+                    subcategoryList = if(result.data.size == 0) listOf() else result.data
                     val subcategoryItems = subcategoryList.map { it.name }
                     val subcategoryAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, subcategoryItems)
                     cboSubcategory.adapter = subcategoryAdapter
+
+                    Log.i("subcategorias", "$subcategoryList")
                 }
                 is ResourceState.Failed -> {
                     Log.i("failure", "error")
                 }
             }
-        })
+        }
     }
 }
