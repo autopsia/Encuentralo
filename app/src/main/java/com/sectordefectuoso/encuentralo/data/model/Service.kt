@@ -1,12 +1,12 @@
 package com.sectordefectuoso.encuentralo.data.model
 
-class Service {
-    var name: String = ""
-    var description: String = ""
-    var status: Boolean = true
+import com.google.firebase.firestore.DocumentId
 
-
-    override fun toString(): String {
-        return "Service(name='$name', description='$description', status=$status)"
-    }
-}
+data class Service (
+    @DocumentId
+    var documentId: String = "",
+    var name: String = "",
+    var description: String = "",
+    var status: Boolean = true,
+    var userId: String = ""
+)

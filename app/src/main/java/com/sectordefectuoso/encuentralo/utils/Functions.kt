@@ -4,14 +4,13 @@ import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
-import androidx.annotation.RequiresApi
+import androidx.lifecycle.LifecycleOwner
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuthException
 import com.sectordefectuoso.encuentralo.R
@@ -198,7 +197,6 @@ class Functions {
 
         fun showAlert(contex: Context, alertDialog: AlertDialog, title: String, message: String){
             alertDialog.dismiss()
-            Thread.sleep(1500)
             createDialog(contex, R.layout.alert_dialog_1, title, message, null)!!
         }
     }

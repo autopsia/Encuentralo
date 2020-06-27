@@ -1,8 +1,10 @@
 package com.sectordefectuoso.encuentralo.data.model
 
+import com.google.firebase.firestore.DocumentId
 import java.util.*
 
 data class User(
+    @DocumentId
     var documentId: String = "",
     var document: String = "",
     var names: String = "",
@@ -10,5 +12,6 @@ data class User(
     var birthdate: Date = Date(),
     var phone: String = "",
     var email: String = "",
+    var password: String = "",
     var service: Service? = null
 )

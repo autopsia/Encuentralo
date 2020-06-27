@@ -7,40 +7,56 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.google.firestore.v1.StructuredQuery.Order
 import com.sectordefectuoso.encuentralo.R
 import com.sectordefectuoso.encuentralo.data.model.Category
 import com.sectordefectuoso.encuentralo.data.model.SubCategory
+import com.sectordefectuoso.encuentralo.data.repository.category.CategoryRepo
+import com.sectordefectuoso.encuentralo.data.repository.service.ServiceRepo
+import com.sectordefectuoso.encuentralo.domain.category.CategoryUC
+import com.sectordefectuoso.encuentralo.domain.category.ICategoryUC
+import com.sectordefectuoso.encuentralo.domain.service.ServiceUC
+import com.sectordefectuoso.encuentralo.utils.BaseFragment
 import com.sectordefectuoso.encuentralo.utils.ResourceState
+import com.sectordefectuoso.encuentralo.viewmodel.RegisterServiceViewModelFactory
 import kotlinx.android.synthetic.main.fragment_register_service.*
 
-
-class RegisterServiceFragment : Fragment() {
+class RegisterServiceFragment : BaseFragment() {
 
     companion object {
         fun newInstance() = RegisterServiceFragment()
     }
 
-    private val registerServiceViewModel by lazy { ViewModelProvider(this).get(RegisterServiceViewModel::class.java)}
+    private val viewModel by lazy {
+        ViewModelProvider(
+            this, RegisterServiceViewModelFactory(
+                ServiceUC(ServiceRepo()), CategoryUC(
+                    CategoryRepo()
+                )
+            )
+        ).get(RegisterServiceViewModel::class.java)
+    }
     private var categoryList = listOf<Category>()
     private var subcategoryList = listOf<SubCategory>()
+
+    override val TAG: String get() = "RegisterServiceFragment"
+
+    override fun getLayout(): Int = R.layout.fragment_register_service
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         var view = inflater.inflate(R.layout.fragment_register_service, container, false)
-        loadCategories()
+        setCategories()
         return view
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        
-        cboCategory.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+
+        cboCategory.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 TODO("Not yet implemented")
             }
@@ -51,54 +67,59 @@ class RegisterServiceFragment : Fragment() {
                 position: Int,
                 id: Long
             ) {
-                loadSubcategories(categoryList[position].documentId)
+                setSubCategories(categoryList[position].documentId)
             }
 
         }
     }
 
-    private fun loadCategories(){
-        registerServiceViewModel.getCategorias.observe(viewLifecycleOwner, Observer { result ->
+    private fun setCategories(){
+        viewModel.getCategories().observe(viewLifecycleOwner, Observer { result ->
             when(result){
                 is ResourceState.Loading -> {
-                    Log.i("categorias ", "Cargando")
+
                 }
                 is ResourceState.Success -> {
                     categoryList = result.data
-                    val categoryItems = categoryList.map { it.name }
-                    val categoryAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, categoryItems)
+                    val items = categoryList.map { it.name }
+                    val categoryAdapter = ArrayAdapter(
+                        requireContext(),
+                        R.layout.item_simple_spinner,
+                        items
+                    )
                     cboCategory.adapter = categoryAdapter
-                    loadSubcategories(categoryList[0].documentId)
-
-                    Log.i("success", "${result.data}")
-                    //Toast.makeText(this, "${result.data}", 1).show()
+                    setSubCategories(categoryList[0].documentId)
                 }
                 is ResourceState.Failed -> {
-                    Log.i("failure", "error")
+                    Log.d("ERROR_CATEGORY", result.message)
                 }
             }
         })
     }
 
-    private fun loadSubcategories(idCategory: String){
-        registerServiceViewModel.idCategory = idCategory
-        registerServiceViewModel.getSubCategories.observeForever { result ->
-            when (result){
+    private fun setSubCategories(idCategory: String) {
+        viewModel.getSubCategories(idCategory).observe(viewLifecycleOwner, Observer { result ->
+            when(result){
                 is ResourceState.Loading -> {
-                    Log.i("load ", "Cargando")
+
                 }
                 is ResourceState.Success -> {
-                    subcategoryList = if(result.data.size == 0) listOf() else result.data
-                    val subcategoryItems = subcategoryList.map { it.name }
-                    val subcategoryAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, subcategoryItems)
-                    cboSubcategory.adapter = subcategoryAdapter
-
-                    Log.i("subcategorias", "$subcategoryList")
+                    subcategoryList = result.data
+                    if(subcategoryList.size == 0) {
+                        subcategoryList += SubCategory("", "Seleccione", 0)
+                    }
+                    val items = subcategoryList.map { it.name }
+                    val subCategoryAdapter = ArrayAdapter(
+                        requireContext(),
+                        R.layout.item_simple_spinner,
+                        items
+                    )
+                    cboSubcategory.adapter = subCategoryAdapter
                 }
                 is ResourceState.Failed -> {
-                    Log.i("failure", "error")
+                    Log.d("ERROR_CATEGORY", result.message)
                 }
             }
-        }
+        })
     }
 }
