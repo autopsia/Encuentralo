@@ -1,5 +1,6 @@
 package com.sectordefectuoso.encuentralo.domain
 
+import androidx.lifecycle.LiveData
 import com.sectordefectuoso.encuentralo.data.model.Category
 import com.sectordefectuoso.encuentralo.data.model.SubCategory
 import com.sectordefectuoso.encuentralo.data.repository.CategoryRepository

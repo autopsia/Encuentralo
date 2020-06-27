@@ -40,9 +40,16 @@
     <fragment
         android:id="@+id/subCategoryFragment"
         android:name="com.sectordefectuoso.encuentralo.ui.home.subcategories.SubCategoryFragment"
-        android:label="SubCategoryFragment" >
+        android:label="{categoryName}" >
         <argument
             android:name="categoryId"
             app:argType="string" />
+        <argument
+            android:name="categoryName"
+            app:argType="string"
+            android:defaultValue="Subcategorias" />
+        <action
+            android:id="@+id/action_subCategoryFragment_to_navigation_home"
+            app:popUpTo="@id/navigation_home" />
     </fragment>
 </navigation>

@@ -8,8 +8,9 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import javax.inject.Inject
 
-class CategoryRepository : ICategoryRepository {
+class CategoryRepository @Inject constructor() : ICategoryRepository {
     private val categoryRef = FirebaseFirestore
         .getInstance()
         .collection("categories")
@@ -48,7 +49,7 @@ class CategoryRepository : ICategoryRepository {
         }
     }
 
-    fun getSubCategoriesByCategory(id:String): Flow<ResourceState<List<SubCategory>>> = callbackFlow {
+    suspend fun getSubCategoriesByCategory(id:String): Flow<ResourceState<List<SubCategory>>> = callbackFlow {
         val subscription = categoryRef.document(id).collection("subcategories").get().addOnSuccessListener { document ->
             offer(
                 ResourceState.Success(document!!.toObjects(SubCategory::class.java))

@@ -43,7 +43,8 @@ class CategoriesAdapter(private var categories: ArrayList<Category>) : RecyclerV
             Toast.makeText(holder.text.context, "Click: ${categories[position].name}", Toast.LENGTH_SHORT).show()
 
             val categoryId = categories[position].documentId
-            val  action = HomeFragmentDirections.actionNavigationHomeToSubCategoryFragment(categoryId)
+            val categoryName = categories[position].name
+            val  action = HomeFragmentDirections.actionNavigationHomeToSubCategoryFragment(categoryId, categoryName)
             holder.itemView.findNavController().navigate(action)
         }
     }
