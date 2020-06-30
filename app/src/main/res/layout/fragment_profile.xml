@@ -38,16 +38,24 @@
                         android:layout_width="150dp"
                         android:layout_height="150dp"
                         app:cardCornerRadius="75dp"
+                        app:contentPadding="5dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
 
-                        <ImageView
-                            android:id="@+id/ivAccountPhotoE"
+                        <androidx.cardview.widget.CardView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            tools:src="@tools:sample/avatars" />
+                            app:cardCornerRadius="70dp">
+
+                            <ImageView
+                                android:id="@+id/ivAccountPhotoE"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                tools:src="@tools:sample/avatars" />
+                        </androidx.cardview.widget.CardView>
+
                     </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
@@ -209,31 +217,6 @@
                     app:layout_constraintStart_toStartOf="@+id/guideline11"
                     app:layout_constraintTop_toBottomOf="@+id/textView24" />
 
-                <TextView
-                    android:id="@+id/textView26"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="Email:"
-                    android:textColor="#47525E"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toStartOf="@+id/guideline12"
-                    app:layout_constraintStart_toStartOf="@+id/guideline11"
-                    app:layout_constraintTop_toBottomOf="@+id/txtAccountPhone" />
-
-                <EditText
-                    android:id="@+id/txtAccountEmail"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:background="@drawable/bg_textview_rounded"
-                    android:ems="10"
-                    android:inputType="textEmailAddress"
-                    app:layout_constraintEnd_toStartOf="@+id/guideline12"
-                    app:layout_constraintStart_toStartOf="@+id/guideline11"
-                    app:layout_constraintTop_toBottomOf="@+id/textView26" />
-
                 <Button
                     android:id="@+id/btnAccountSave"
                     android:layout_width="0dp"
@@ -247,7 +230,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/guideline12"
                     app:layout_constraintStart_toStartOf="@+id/guideline11"
-                    app:layout_constraintTop_toBottomOf="@+id/txtAccountEmail" />
+                    app:layout_constraintTop_toBottomOf="@+id/txtAccountPhone" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>

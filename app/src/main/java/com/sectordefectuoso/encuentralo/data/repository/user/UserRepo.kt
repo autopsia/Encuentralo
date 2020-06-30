@@ -6,10 +6,12 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.sectordefectuoso.encuentralo.data.model.User
 import com.sectordefectuoso.encuentralo.utils.ResourceState
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 
 class UserRepo : IUserRepo {
@@ -17,29 +19,19 @@ class UserRepo : IUserRepo {
     private val auth = FirebaseAuth.getInstance()
     private val userAuth = auth.currentUser
 
+    @ExperimentalCoroutinesApi
     override suspend fun get(): Flow<ResourceState<User>> = callbackFlow {
-        if(userAuth == null){
-            offer(ResourceState.Failed("No ha iniciado sesión correctamente"))
-        }
-
         val subscription = userRef.document(userAuth!!.uid).addSnapshotListener { snapshot, exception ->
-            if(snapshot?.data == null) {
-               offer(ResourceState.Failed("No se encontró su información en la base de datos"))
-                cancel("No se encontró su información en la base de datos")
-            }
-            else{
+            if(snapshot!!.exists()){
                 val user = snapshot!!.toObject(User::class.java)!!
                 offer(ResourceState.Success(user))
             }
-
-            exception?.let {
-                offer(ResourceState.Failed(it.message.toString()))
-                cancel(it.message.toString())
+            else{
+                channel.close()
             }
         }
         awaitClose {
             subscription.remove()
-            cancel()
         }
     }
 
@@ -49,34 +41,42 @@ class UserRepo : IUserRepo {
         return ResourceState.Success(user!!)
     }
 
-    override suspend fun create(user: User): ResourceState<User> {
-        val userMap = hashMapOf(
-            "document" to user.document,
-            "names" to user.names,
-            "lastNames" to user.lastNames,
-            "birthdate" to user.birthdate,
-            "email" to user.email,
-            "phone" to user.phone
-        )
-        userRef.document(user.documentId).set(userMap).await()
-        return getById(user.documentId)
+    override suspend fun create(user: User): Flow<ResourceState<Boolean>> = flow {
+        if(!user.documentId.isEmpty()){
+            val userMap = hashMapOf(
+                "document" to user.document,
+                "names" to user.names,
+                "lastNames" to user.lastNames,
+                "birthdate" to user.birthdate,
+                "email" to user.email,
+                "phone" to user.phone,
+                "imageUrl" to user.imageUrl
+            )
+
+            userRef.document(user.documentId).set(userMap).await()
+            emit(ResourceState.Success(true))
+        }
+        else{
+            throw Exception("No se pudo registrar en la base de datos")
+        }
     }
 
-    override suspend fun update(user: User): ResourceState<User> {
+    override suspend fun update(user: User): Flow<ResourceState<Boolean>> = flow {
         if (userAuth == null){
             throw Exception("El usuario no se encuentra autenticado")
         }
-
-        val userMap = hashMapOf(
-            "document" to user.document,
-            "names" to user.names,
-            "lastNames" to user.lastNames,
-            "birthdate" to user.birthdate,
-            "email" to user.email,
-            "phone" to user.phone
-        )
-        userRef.document(userAuth.uid).set(userMap, SetOptions.merge()).await()
-        return getById(userAuth.uid)
+        else{
+            val userMap = hashMapOf(
+                "document" to user.document,
+                "names" to user.names,
+                "lastNames" to user.lastNames,
+                "birthdate" to user.birthdate,
+                "email" to user.email,
+                "phone" to user.phone
+            )
+            userRef.document(userAuth.uid).set(userMap, SetOptions.merge()).await()
+            emit(ResourceState.Success(true))
+        }
     }
 
     override suspend fun createAuth(email: String, password: String): ResourceState<String> {
@@ -87,17 +87,6 @@ class UserRepo : IUserRepo {
         var result = auth.createUserWithEmailAndPassword(email, password).await()
         val uid = result.user?.uid ?: throw Exception("No se pudo registrar la autenticación")
         return ResourceState.Success(uid)
-    }
-
-    override suspend fun updateEmail(newEmail: String, prevEmail: String, password: String): ResourceState<Boolean> {
-        if (userAuth == null){
-            throw Exception("El usuario no se encuentra autenticado")
-        }
-
-        val credential = EmailAuthProvider.getCredential(prevEmail, password)
-        userAuth.reauthenticate(credential).await()
-        userAuth.updateEmail(newEmail).await()
-        return ResourceState.Success(true)
     }
 
     override suspend fun updatePassword(email: String): ResourceState<Boolean> {

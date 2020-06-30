@@ -67,17 +67,25 @@
                         android:id="@+id/cardView"
                         android:layout_width="150dp"
                         android:layout_height="150dp"
+                        app:cardBackgroundColor="#FFFFFF"
                         app:cardCornerRadius="75dp"
+                        app:contentPadding="5dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/btnAccountEdit">
 
-                        <ImageView
-                            android:id="@+id/ivAccountPhoto"
+                        <androidx.cardview.widget.CardView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            tools:src="@tools:sample/avatars" />
+                            app:cardCornerRadius="70dp">
+
+                            <ImageView
+                                android:id="@+id/ivAccountPhoto"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                tools:src="@tools:sample/avatars" />
+                        </androidx.cardview.widget.CardView>
 
                     </androidx.cardview.widget.CardView>
 

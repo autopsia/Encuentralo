@@ -10,13 +10,11 @@ class UserUC(private val repo: IUserRepo) : IUserUC {
 
     override suspend fun getById(uid: String): ResourceState<User> = repo.getById(uid)
 
-    override suspend fun create(user: User): ResourceState<User> = repo.create(user)
+    override suspend fun create(user: User): Flow<ResourceState<Boolean>> = repo.create(user)
 
-    override suspend fun update(user: User): ResourceState<User> = repo.update(user)
+    override suspend fun update(user: User): Flow<ResourceState<Boolean>> = repo.update(user)
 
     override suspend fun createAuth(email: String, password: String): ResourceState<String> = repo.createAuth(email, password)
-
-    override suspend fun updateEmail(newEmail: String, prevEmail: String, password: String): ResourceState<Boolean> = repo.updateEmail(newEmail, prevEmail, password)
 
     override suspend fun updatePassword(email: String): ResourceState<Boolean> = repo.updatePassword(email)
 

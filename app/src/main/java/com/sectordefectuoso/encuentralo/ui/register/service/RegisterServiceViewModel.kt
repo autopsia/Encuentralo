@@ -56,8 +56,9 @@ class RegisterServiceViewModel(
     fun saveUserDB(user: User) = liveData(coroutineContext) {
         emit(ResourceState.Loading)
         try {
-            val result = userUC.create(user)
-            emit(result)
+            userUC.create(user).collect{
+                emit(it)
+            }
         } catch (e: Exception) {
             emit(ResourceState.Failed(e.message!!))
         }
@@ -76,8 +77,9 @@ class RegisterServiceViewModel(
     fun saveDB(service: Service) = liveData(coroutineContext) {
         emit(ResourceState.Loading)
         try {
-            val result = serviceUC.create(service)
-            emit(result)
+            serviceUC.create(service).collect {
+                emit(it)
+            }
         } catch (e: Exception) {
             emit(ResourceState.Failed(e.message!!))
         }

@@ -11,6 +11,8 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.gson.Gson
 import com.sectordefectuoso.encuentralo.LoginActivity
 import com.sectordefectuoso.encuentralo.R
@@ -79,6 +81,9 @@ class AccountFragment : BaseFragment() {
                         SimpleDateFormat("dd/MM/yyyy").format(user?.birthdate)
                     lblAccountPhone.text = user?.phone
                     lblAccountEmail.text = user?.email
+                    Glide.with(requireContext()).load(user?.imageUrl)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true)
+                        .centerCrop().into(ivAccountPhoto)
                 }
                 is ResourceState.Failed -> {
                     Functions.showAlert(requireContext(), null, "Alerta", result.message)
@@ -94,7 +99,7 @@ class AccountFragment : BaseFragment() {
 
                 }
                 is ResourceState.Success -> {
-                    if (result.data){
+                    if (result.data) {
                         val intent = Intent(requireContext(), LoginActivity::class.java)
                         startActivity(intent)
                         requireActivity().finish()
