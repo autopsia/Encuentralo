@@ -3,7 +3,6 @@ package com.sectordefectuoso.encuentralo.ui.register.service
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
@@ -16,6 +15,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
@@ -28,9 +28,11 @@ import com.sectordefectuoso.encuentralo.data.model.SubCategory
 import com.sectordefectuoso.encuentralo.data.model.User
 import com.sectordefectuoso.encuentralo.data.repository.category.CategoryRepo
 import com.sectordefectuoso.encuentralo.data.repository.service.ServiceRepo
+import com.sectordefectuoso.encuentralo.data.repository.storage.StorageRepo
 import com.sectordefectuoso.encuentralo.data.repository.user.UserRepo
 import com.sectordefectuoso.encuentralo.domain.category.CategoryUC
 import com.sectordefectuoso.encuentralo.domain.service.ServiceUC
+import com.sectordefectuoso.encuentralo.domain.storage.StorageUC
 import com.sectordefectuoso.encuentralo.domain.user.UserUC
 import com.sectordefectuoso.encuentralo.utils.BaseFragment
 import com.sectordefectuoso.encuentralo.utils.Functions
@@ -53,7 +55,10 @@ class RegisterServiceFragment : BaseFragment() {
     private val viewModel by lazy {
         ViewModelProvider(
             this, RegisterServiceViewModelFactory(
-                ServiceUC(ServiceRepo()), CategoryUC(CategoryRepo()), UserUC(UserRepo())
+                ServiceUC(ServiceRepo()),
+                CategoryUC(CategoryRepo()),
+                UserUC(UserRepo()),
+                StorageUC(StorageRepo())
             )
         ).get(RegisterServiceViewModel::class.java)
     }
@@ -61,6 +66,7 @@ class RegisterServiceFragment : BaseFragment() {
     private var categoryList = listOf<Category>()
     private var subcategoryList = listOf<SubCategory>()
     private lateinit var photoFile: File
+    private lateinit var imageUri: Uri
 
     override val TAG: String get() = "RegisterServiceFragment"
 
@@ -204,14 +210,14 @@ class RegisterServiceFragment : BaseFragment() {
     }
 
     private fun setUser(): User {
-        var user = Gson().fromJson(arguments?.getString("user"), User::class.java)
-        return user
+        return Gson().fromJson(arguments?.getString("user"), User::class.java)
     }
 
     private fun setService(): Service {
         var service = Service()
         service.title = txtServiceTitle.text.toString().trim()
         service.description = txtServiceDescription.text.toString().trim()
+        service.subcategoryId = subcategoryList[cboServiceSubcategory.selectedItemPosition].documentId
 
         return service
     }
@@ -231,7 +237,7 @@ class RegisterServiceFragment : BaseFragment() {
                     }
                     is ResourceState.Success -> {
                         user.documentId = result.data
-                        createUser(user, service)
+                        uploadImage(user, service)
                     }
                     is ResourceState.Failed -> {
                         Functions.showAlert(
@@ -245,12 +251,32 @@ class RegisterServiceFragment : BaseFragment() {
             })
     }
 
+    private fun uploadImage(user: User, service: Service) {
+        viewModel.uploadImage(imageUri, user.documentId).observe(viewLifecycleOwner, Observer { result ->
+            when (result) {
+                is ResourceState.Success -> {
+                    user.imageUrl = result.data
+                    createUser(user, service)
+                }
+                is ResourceState.Failed -> {
+                    hideAlertDialog(alertDialog)
+                    Functions.showAlert(
+                        requireActivity(),
+                        alertDialog,
+                        "Atención",
+                        "No se pudo subir su imagen"
+                    )
+                }
+            }
+        })
+    }
+
     private fun createUser(user: User, service: Service) {
         viewModel.saveUserDB(user).observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is ResourceState.Success -> {
-                    service.userId = result.data.documentId
-                    uploadImage(service)
+                    service.userId = user.documentId
+                    createService(service)
                 }
                 is ResourceState.Failed -> {
                     hideAlertDialog(alertDialog)
@@ -263,10 +289,6 @@ class RegisterServiceFragment : BaseFragment() {
                 }
             }
         })
-    }
-
-    private fun uploadImage(service: Service) {
-        createService(service)
     }
 
     private fun createService(service: Service) {
@@ -296,10 +318,11 @@ class RegisterServiceFragment : BaseFragment() {
 
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == IMAGE_CAPTURE_CODE) {
+                imageUri = photoFile.toUri()
                 Glide.with(requireActivity()).load(photoFile).centerCrop().into(ivServicePhoto)
             }
             if (requestCode == IMAGE_PICK_CODE) {
-                val imageUri = data?.data
+                imageUri = data?.data!!
                 Glide.with(requireActivity()).load(imageUri).centerCrop().into(ivServicePhoto)
             }
         }

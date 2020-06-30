@@ -13,5 +13,5 @@ data class User(
     var phone: String = "",
     var email: String = "",
     var password: String = "",
-    var service: Service? = null
+    var imageUrl: String = ""
 )

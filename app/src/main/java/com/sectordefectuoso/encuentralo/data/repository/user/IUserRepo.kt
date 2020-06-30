@@ -1,5 +1,6 @@
 package com.sectordefectuoso.encuentralo.data.repository.user
 
+import android.net.Uri
 import com.sectordefectuoso.encuentralo.data.model.User
 import com.sectordefectuoso.encuentralo.utils.ResourceState
 import kotlinx.coroutines.flow.Flow

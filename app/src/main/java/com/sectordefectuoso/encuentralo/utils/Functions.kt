@@ -208,8 +208,8 @@ class Functions {
             dpd.show()
         }
 
-        fun showAlert(contex: Context, alertDialog: AlertDialog, title: String, message: String){
-            alertDialog.dismiss()
+        fun showAlert(contex: Context, alertDialog: AlertDialog?, title: String, message: String){
+            alertDialog?.dismiss()
             createDialog(contex, R.layout.alert_dialog_1, title, message, null)!!
         }
     }

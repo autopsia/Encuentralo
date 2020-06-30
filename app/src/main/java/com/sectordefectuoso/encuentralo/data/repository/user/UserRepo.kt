@@ -4,17 +4,13 @@ import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
-import com.google.gson.Gson
 import com.sectordefectuoso.encuentralo.data.model.User
 import com.sectordefectuoso.encuentralo.utils.ResourceState
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 class UserRepo : IUserRepo {
     private val userRef = FirebaseFirestore.getInstance().collection("users")
@@ -27,8 +23,14 @@ class UserRepo : IUserRepo {
         }
 
         val subscription = userRef.document(userAuth!!.uid).addSnapshotListener { snapshot, exception ->
-            val user = snapshot!!.toObject(User::class.java)!!
-            offer(ResourceState.Success(user))
+            if(snapshot?.data == null) {
+               offer(ResourceState.Failed("No se encontró su información en la base de datos"))
+                cancel("No se encontró su información en la base de datos")
+            }
+            else{
+                val user = snapshot!!.toObject(User::class.java)!!
+                offer(ResourceState.Success(user))
+            }
 
             exception?.let {
                 offer(ResourceState.Failed(it.message.toString()))

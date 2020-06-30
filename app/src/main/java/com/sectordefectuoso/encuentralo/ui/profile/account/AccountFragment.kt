@@ -18,6 +18,7 @@ import com.sectordefectuoso.encuentralo.data.model.User
 import com.sectordefectuoso.encuentralo.data.repository.user.UserRepo
 import com.sectordefectuoso.encuentralo.domain.user.UserUC
 import com.sectordefectuoso.encuentralo.utils.BaseFragment
+import com.sectordefectuoso.encuentralo.utils.Functions
 import com.sectordefectuoso.encuentralo.utils.ResourceState
 import com.sectordefectuoso.encuentralo.viewmodel.AccountViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
@@ -80,7 +81,7 @@ class AccountFragment : BaseFragment() {
                     lblAccountEmail.text = user?.email
                 }
                 is ResourceState.Failed -> {
-                    Log.d("ERROR_ACCOUNT", result.message)
+                    Functions.showAlert(requireContext(), null, "Alerta", result.message)
                 }
             }
         })
