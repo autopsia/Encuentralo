@@ -50,6 +50,26 @@
             android:defaultValue="Subcategorias" />
         <action
             android:id="@+id/action_subCategoryFragment_to_navigation_home"
+            app:destination="@id/navigation_home"
             app:popUpTo="@id/navigation_home" />
+        <action
+            android:id="@+id/action_subCategoryFragment_to_postListFragment"
+            app:destination="@id/postListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/postListFragment"
+        android:name="com.sectordefectuoso.encuentralo.ui.home.postlist.PostListFragment"
+        android:label="PostListFragment" >
+        <action
+            android:id="@+id/action_postListFragment_to_postFragment"
+            app:destination="@id/postFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/postFragment"
+        android:name="com.sectordefectuoso.encuentralo.ui.home.post.PostFragment"
+        android:label="PostFragment" >
+        <action
+            android:id="@+id/action_postFragment_to_postListFragment"
+            app:destination="@id/postListFragment" />
     </fragment>
 </navigation>
