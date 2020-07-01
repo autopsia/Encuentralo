@@ -12,7 +12,8 @@
         tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/action_navigation_home_to_subCategoryFragment"
-            app:destination="@id/subCategoryFragment" />
+            app:destination="@id/subCategoryFragment"
+            app:popUpTo="@id/navigation_home" />
         <argument
             android:name="categoryId"
             app:argType="string" />
@@ -59,17 +60,33 @@
     <fragment
         android:id="@+id/postListFragment"
         android:name="com.sectordefectuoso.encuentralo.ui.home.postlist.PostListFragment"
-        android:label="PostListFragment" >
+        android:label="{subCategoryName}" >
         <action
             android:id="@+id/action_postListFragment_to_postFragment"
             app:destination="@id/postFragment" />
+        <argument
+            android:name="subCategoryId"
+            app:argType="string" />
+        <argument
+            android:name="subCategoryName"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="Sub Categoria" />
     </fragment>
     <fragment
         android:id="@+id/postFragment"
         android:name="com.sectordefectuoso.encuentralo.ui.home.post.PostFragment"
-        android:label="PostFragment" >
+        android:label="{serviceName}" >
         <action
             android:id="@+id/action_postFragment_to_postListFragment"
             app:destination="@id/postListFragment" />
+        <argument
+            android:name="serviceId"
+            app:argType="string" />
+        <argument
+            android:name="serviceName"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="Servicio" />
     </fragment>
 </navigation>

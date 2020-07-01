@@ -42,8 +42,8 @@ class SubCategoriesAdapter(private var subCategories: ArrayList<SubCategory>) : 
         holder.cardView.setOnClickListener {
             Toast.makeText(holder.text.context, "Click: ${subCategories[position].name}", Toast.LENGTH_SHORT).show()
 
-            val categoryId = subCategories[position].documentId
-            val  action = SubCategoryFragmentDirections.actionSubCategoryFragmentToPostListFragment()
+            val subCategories = subCategories[position].documentId
+            val  action = SubCategoryFragmentDirections.actionSubCategoryFragmentToPostListFragment(subCategories)
             holder.itemView.findNavController().navigate(action)
         }
     }

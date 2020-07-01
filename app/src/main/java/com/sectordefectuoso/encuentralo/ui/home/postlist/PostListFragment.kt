@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.fragment_postlist.view.*
 
 @AndroidEntryPoint
 class PostListFragment : BaseFragment() {
-    //val args: SubCategoryFragmentArgs by navArgs()
+    val args: PostListFragmentArgs by navArgs()
     val postListViewModel : PostListViewModel by viewModels()
 
     override val TAG: String
@@ -40,12 +40,12 @@ class PostListFragment : BaseFragment() {
 
         root.btnPostListTest.setOnClickListener {
 
-            val  action = PostListFragmentDirections.actionPostListFragmentToPostFragment()
+            val  action = PostListFragmentDirections.actionPostListFragmentToPostFragment("Hola Jordi")
             root.findNavController().navigate(action)
         }
 
         observeData()
-        
+
         return root
     }
 
