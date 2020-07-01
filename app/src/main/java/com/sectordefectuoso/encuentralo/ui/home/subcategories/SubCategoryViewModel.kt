@@ -5,12 +5,10 @@ import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.sectordefectuoso.encuentralo.data.repository.CategoryRepository
-import com.sectordefectuoso.encuentralo.domain.IUseCase
 import com.sectordefectuoso.encuentralo.utils.ResourceState
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import java.lang.Exception
-import javax.inject.Inject
 
 class SubCategoryViewModel @ViewModelInject constructor(
     @Assisted savedStateHandle: SavedStateHandle,
@@ -19,11 +17,11 @@ class SubCategoryViewModel @ViewModelInject constructor(
 
     private val _categoryid : MutableLiveData<String> = state.getLiveData("categoryId")
 
-    fun saveCurrentUser(categoryId: String) {
+    fun saveCurrentSubCategory(categoryId: String) {
         // Sets a new value for the object associated to the key.
         state.set("categoryId", categoryId)
     }
-    fun getCurrentUser(): String {
+    fun getCurrenSubCategory(): String {
         // Gets the current value of the user id from the saved state handle
         return state.get("categoryId")?: ""
     }
@@ -31,7 +29,7 @@ class SubCategoryViewModel @ViewModelInject constructor(
     val getSubcategoriesByCategory = liveData(Dispatchers.IO) {
         emit(ResourceState.Loading)
         try {
-                categoryRepository.getSubCategoriesByCategory(getCurrentUser()).collect {
+                categoryRepository.getSubCategoriesByCategory(getCurrenSubCategory()).collect {
                     emit(it)
             }
         }catch (e: Exception){

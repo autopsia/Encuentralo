@@ -16,9 +16,7 @@ import com.sectordefectuoso.encuentralo.ui.home.adapter.SubCategoriesAdapter
 import com.sectordefectuoso.encuentralo.utils.BaseFragment
 import com.sectordefectuoso.encuentralo.utils.ResourceState
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_subcategories.*
-import kotlinx.android.synthetic.main.fragment_subcategories.view.*
 
 @AndroidEntryPoint
 class SubCategoryFragment : BaseFragment() {
@@ -37,7 +35,7 @@ class SubCategoryFragment : BaseFragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        subCategoryViewModel.saveCurrentUser(args.categoryId)
+        subCategoryViewModel.saveCurrentSubCategory(args.categoryId)
         val root = inflater.inflate(R.layout.fragment_subcategories, container, false)
 
         savedInstanceState?.putString("categoryId", args.categoryId)
