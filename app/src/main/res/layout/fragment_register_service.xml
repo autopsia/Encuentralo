@@ -63,7 +63,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/textView15" />
 
                 <Spinner
-                    android:id="@+id/cboCategory"
+                    android:id="@+id/cboServiceCategory"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
@@ -82,10 +82,10 @@
                     android:textSize="18sp"
                     app:layout_constraintEnd_toStartOf="@+id/guideline8"
                     app:layout_constraintStart_toStartOf="@+id/guideline7"
-                    app:layout_constraintTop_toBottomOf="@+id/cboCategory" />
+                    app:layout_constraintTop_toBottomOf="@+id/cboServiceCategory" />
 
                 <Spinner
-                    android:id="@+id/cboSubcategory"
+                    android:id="@+id/cboServiceSubcategory"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
@@ -99,51 +99,78 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
+                    android:text="Título:"
+                    android:textColor="#47525E"
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline8"
+                    app:layout_constraintStart_toStartOf="@+id/guideline7"
+                    app:layout_constraintTop_toBottomOf="@+id/cboServiceSubcategory" />
+
+                <EditText
+                    android:id="@+id/txtServiceTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="80dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/bg_textview_rounded"
+                    android:ems="10"
+                    android:gravity="top"
+                    android:inputType="textMultiLine|textPersonName|textCapSentences"
+                    android:lines="2"
+                    android:maxLines="2"
+                    android:singleLine="false"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline8"
+                    app:layout_constraintStart_toStartOf="@+id/guideline7"
+                    app:layout_constraintTop_toBottomOf="@+id/textView29" />
+
+                <TextView
+                    android:id="@+id/textView30"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
                     android:text="Descripción:"
                     android:textColor="#47525E"
                     android:textSize="18sp"
                     app:layout_constraintEnd_toStartOf="@+id/guideline8"
                     app:layout_constraintStart_toStartOf="@+id/guideline7"
-                    app:layout_constraintTop_toBottomOf="@+id/cboSubcategory" />
+                    app:layout_constraintTop_toBottomOf="@+id/txtServiceTitle" />
 
                 <EditText
-                    android:id="@+id/txtDescription"
+                    android:id="@+id/txtServiceDescription"
                     android:layout_width="0dp"
-                    android:layout_height="100dp"
-                    android:layout_marginTop="4dp"
+                    android:layout_height="120dp"
                     android:background="@drawable/bg_textview_rounded"
                     android:ems="10"
                     android:gravity="start"
-                    android:inputType="textPersonName"
+                    android:inputType="textMultiLine|textPersonName|textCapSentences"
                     android:maxLines="4"
                     android:singleLine="false"
                     app:layout_constraintEnd_toStartOf="@+id/guideline8"
                     app:layout_constraintStart_toStartOf="@+id/guideline7"
-                    app:layout_constraintTop_toBottomOf="@+id/textView29"
-                    tools:text="asdasdasdsad" />
+                    app:layout_constraintTop_toBottomOf="@+id/textView30" />
 
                 <ImageView
-                    android:id="@+id/imageView"
+                    android:id="@+id/ivServicePhoto"
                     android:layout_width="220dp"
                     android:layout_height="220dp"
                     android:layout_marginTop="16dp"
                     android:adjustViewBounds="true"
+                    android:cropToPadding="true"
                     android:scaleType="centerCrop"
                     app:layout_constraintStart_toStartOf="@+id/guideline7"
-                    app:layout_constraintTop_toBottomOf="@+id/txtDescription"
+                    app:layout_constraintTop_toBottomOf="@+id/txtServiceDescription"
                     app:srcCompat="@drawable/img_default" />
 
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/cardView3"
+                    android:id="@+id/btnServicePhoto"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:cardBackgroundColor="#FF0000"
                     app:cardCornerRadius="25dp"
                     app:contentPadding="10dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/imageView"
+                    app:layout_constraintBottom_toBottomOf="@+id/ivServicePhoto"
                     app:layout_constraintEnd_toStartOf="@+id/guideline8"
-                    app:layout_constraintStart_toEndOf="@+id/imageView"
-                    app:layout_constraintTop_toTopOf="@+id/imageView">
+                    app:layout_constraintStart_toEndOf="@+id/ivServicePhoto"
+                    app:layout_constraintTop_toTopOf="@+id/ivServicePhoto">
 
                     <ImageView
                         android:id="@+id/imageView2"
@@ -153,7 +180,7 @@
                 </androidx.cardview.widget.CardView>
 
                 <Button
-                    android:id="@+id/button"
+                    android:id="@+id/btnServiceSave"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
@@ -167,7 +194,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/guideline8"
                     app:layout_constraintStart_toStartOf="@+id/guideline7"
-                    app:layout_constraintTop_toBottomOf="@+id/imageView" />
+                    app:layout_constraintTop_toBottomOf="@+id/ivServicePhoto" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>

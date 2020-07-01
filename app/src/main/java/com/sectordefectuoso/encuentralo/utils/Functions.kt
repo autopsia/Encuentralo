@@ -9,6 +9,7 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
 import android.view.inputmethod.InputMethodManager
+import android.widget.Spinner
 import android.widget.TextView
 import androidx.lifecycle.LifecycleOwner
 import com.google.firebase.FirebaseException
@@ -30,6 +31,18 @@ class Functions {
     companion object {
         const val DB_FAIL = "Fallo en el registro de la base de datos"
         const val AUTH_FAIL = "Fallo en el registro de autenticación"
+
+        fun validateSpinner(spinner: Spinner): Boolean {
+            val text = spinner.selectedItem.toString()
+
+            return if (text.isEmpty() || text.toLowerCase().equals("seleccione")) {
+                spinner.setBackgroundResource(R.drawable.bg_spinner_error_rounded)
+                true
+            } else {
+                spinner.setBackgroundResource(R.drawable.bg_spinner_rounded)
+                false
+            }
+        }
 
         fun validateTextView(textView: TextView): Boolean {
             val text = textView.text.trim()
@@ -195,8 +208,8 @@ class Functions {
             dpd.show()
         }
 
-        fun showAlert(contex: Context, alertDialog: AlertDialog, title: String, message: String){
-            alertDialog.dismiss()
+        fun showAlert(contex: Context, alertDialog: AlertDialog?, title: String, message: String){
+            alertDialog?.dismiss()
             createDialog(contex, R.layout.alert_dialog_1, title, message, null)!!
         }
     }

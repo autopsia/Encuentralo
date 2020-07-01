@@ -1,18 +1,29 @@
 package com.sectordefectuoso.encuentralo.ui.profile.edit
 
+import android.app.Activity
 import android.app.AlertDialog
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.sectordefectuoso.encuentralo.R
 import com.sectordefectuoso.encuentralo.data.model.User
 import com.google.gson.Gson
+import com.sectordefectuoso.encuentralo.data.repository.storage.StorageRepo
 import com.sectordefectuoso.encuentralo.data.repository.user.UserRepo
+import com.sectordefectuoso.encuentralo.domain.storage.StorageUC
 import com.sectordefectuoso.encuentralo.domain.user.UserUC
 import com.sectordefectuoso.encuentralo.utils.BaseFragment
 import com.sectordefectuoso.encuentralo.utils.Functions
@@ -20,6 +31,7 @@ import com.sectordefectuoso.encuentralo.utils.ResourceState
 import com.sectordefectuoso.encuentralo.viewmodel.ProfileViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_profile.*
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -29,14 +41,19 @@ class ProfileFragment : BaseFragment() {
         fun newInstance() = ProfileFragment()
     }
 
+    private val IMAGE_PICK_CODE = 1001;
+    private val IMAGE_CAPTURE_CODE = 1002;
+
     private val viewModel by lazy {
         ViewModelProvider(
             this,
-            ProfileViewModelFactory(UserUC(UserRepo()))
+            ProfileViewModelFactory(UserUC(UserRepo()), StorageUC(StorageRepo()))
         ).get(ProfileViewModel::class.java)
     }
     private lateinit var alertDialog: AlertDialog
     private var userBundle: User = User()
+    private lateinit var photoFile: File
+    private lateinit var imageUri: Uri
 
     override val TAG: String get() = "ProfileFragment"
 
@@ -57,22 +74,13 @@ class ProfileFragment : BaseFragment() {
         txtAccountBirthdate.setOnClickListener {
             Functions.openCalendar(requireContext(), txtAccountBirthdate)
         }
+        ivAccountCamera.setOnClickListener {
+            takePhoto()
+        }
         btnAccountSave.setOnClickListener {
             if (validate()) {
                 var user = setUser()
-
-                alertDialog = showAlertDialog(
-                    requireContext(),
-                    R.layout.alert_dialog_2,
-                    "Guardando",
-                    "",
-                    null
-                )
-                if (user.email.equals(userBundle.email)) {
-                    updateUser(user)
-                } else {
-                    updateEmail(user)
-                }
+                uploadImage(user)
             }
         }
     }
@@ -84,7 +92,47 @@ class ProfileFragment : BaseFragment() {
         txtAccountLastName.setText(userBundle.lastNames)
         txtAccountBirthdate.setText(SimpleDateFormat("dd/MM/yyyy").format(userBundle.birthdate))
         txtAccountPhone.setText(userBundle.phone)
-        txtAccountEmail.setText(userBundle.email)
+        Glide.with(requireContext()).load(userBundle?.imageUrl)
+            .diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).centerCrop()
+            .into(ivAccountPhotoE)
+    }
+
+    private fun takePhoto() {
+        val options = arrayOf<CharSequence>("Cárama", "Galería", "Cancelar")
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Seleccione")
+        builder.setItems(options) { dialog, item ->
+            when (item) {
+                0 -> {
+                    val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                    photoFile = getPhoto()
+                    val fileProvider = FileProvider.getUriForFile(
+                        requireContext(),
+                        "com.sectordefectuoso.encuentralo.fileprovider",
+                        photoFile
+                    )
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider)
+                    startActivityForResult(intent, IMAGE_CAPTURE_CODE)
+                }
+                1 -> {
+                    val intent =
+                        Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                    startActivityForResult(intent, IMAGE_PICK_CODE)
+                }
+                2 -> {
+                    dialog.dismiss()
+                }
+            }
+        }
+        builder.show()
+    }
+
+    private fun getPhoto(): File {
+        val timeStamp: String = SimpleDateFormat("yyyy-MM-dd-HHmmss").format(Date())
+        val fileName = "IMG_${timeStamp}"
+
+        var storageDirectory = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile(fileName, ".jpg", storageDirectory)
     }
 
     private fun validate(): Boolean {
@@ -94,7 +142,6 @@ class ProfileFragment : BaseFragment() {
         if (Functions.validateTextView(txtAccountLastName)) valid = false
         if (Functions.validateTextView(txtAccountBirthdate)) valid = false
         if (Functions.validateTextView(txtAccountPhone)) valid = false
-        if (Functions.validateTextView(txtAccountEmail)) valid = false
 
         if (Functions.validateTextView(
                 txtAccountDocument,
@@ -112,10 +159,7 @@ class ProfileFragment : BaseFragment() {
                 9
             )
         ) return showNotification("Validación de Campos", "Ingrese un celular válido")
-        if (Functions.validateTextViewEmail(txtAccountEmail)) return showNotification(
-            "Validación de Campos",
-            "Ingrese un email válido"
-        )
+
         return valid
     }
 
@@ -133,34 +177,13 @@ class ProfileFragment : BaseFragment() {
         user.lastNames = txtAccountLastName.text.toString()
         user.birthdate = dateFormat.parse(txtAccountBirthdate.text.toString())
         user.phone = txtAccountPhone.text.toString()
-        user.email = txtAccountEmail.text.toString()
 
         return user
-    }
-
-    private fun updateEmail(user: User) {
-        viewModel.updateEmail(user.email, userBundle.email, userBundle.password).observe(viewLifecycleOwner, Observer { result ->
-            when (result) {
-                is ResourceState.Loading -> {
-
-                }
-                is ResourceState.Success -> {
-                    updateUser(user)
-                }
-                is ResourceState.Failed -> {
-                    hideAlertDialog(alertDialog)
-                    Log.d("ERROR_PROFILE", result.message)
-                }
-            }
-        })
     }
 
     private fun updateUser(user: User) {
         viewModel.updateDB(user).observe(viewLifecycleOwner, Observer { result ->
             when (result) {
-                is ResourceState.Loading -> {
-
-                }
                 is ResourceState.Success -> {
                     hideAlertDialog(alertDialog)
                     nav_host_fragment.findNavController()
@@ -168,8 +191,64 @@ class ProfileFragment : BaseFragment() {
                 }
                 is ResourceState.Failed -> {
                     Log.d("ERROR_PROFILE", result.message)
+                    hideAlertDialog(alertDialog)
+                    Functions.showAlert(
+                        requireActivity(),
+                        alertDialog,
+                        "Atención",
+                        Functions.DB_FAIL
+                    )
                 }
             }
         })
+    }
+
+    private fun uploadImage(user: User) {
+        if (imageUri != null) {
+            viewModel.uploadImage(imageUri, userBundle.documentId)
+                .observe(viewLifecycleOwner, Observer { result ->
+                    when (result) {
+                        is ResourceState.Loading -> {
+                            alertDialog = showAlertDialog(
+                                requireContext(),
+                                R.layout.alert_dialog_2,
+                                "Guardando",
+                                "",
+                                null
+                            )
+                        }
+                        is ResourceState.Success -> {
+                            user.imageUrl = result.data
+                            updateUser(user)
+                        }
+                        is ResourceState.Failed -> {
+                            hideAlertDialog(alertDialog)
+                            Functions.showAlert(
+                                requireActivity(),
+                                alertDialog,
+                                "Atención",
+                                "No se pudo subir su imagen"
+                            )
+                        }
+                    }
+                })
+        } else {
+            updateUser(user)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == IMAGE_CAPTURE_CODE) {
+                imageUri = photoFile.toUri()
+                Glide.with(requireActivity()).load(photoFile).centerCrop().into(ivAccountPhotoE)
+            }
+            if (requestCode == IMAGE_PICK_CODE) {
+                imageUri = data?.data!!
+                Glide.with(requireActivity()).load(imageUri).centerCrop().into(ivAccountPhotoE)
+            }
+        }
     }
 }

@@ -109,7 +109,7 @@
                     android:layout_marginTop="4dp"
                     android:background="@drawable/bg_textview_rounded"
                     android:ems="10"
-                    android:inputType="textPersonName"
+                    android:inputType="textPersonName|textCapWords"
                     app:layout_constraintEnd_toStartOf="@+id/guideline6"
                     app:layout_constraintStart_toStartOf="@+id/guideline5"
                     app:layout_constraintTop_toBottomOf="@+id/textView9" />
@@ -133,7 +133,7 @@
                     android:layout_marginTop="4dp"
                     android:background="@drawable/bg_textview_rounded"
                     android:ems="10"
-                    android:inputType="textPersonName"
+                    android:inputType="textPersonName|textCapWords"
                     app:layout_constraintEnd_toStartOf="@+id/guideline6"
                     app:layout_constraintStart_toStartOf="@+id/guideline5"
                     app:layout_constraintTop_toBottomOf="@+id/textView10" />
