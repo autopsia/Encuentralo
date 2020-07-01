@@ -29,4 +29,8 @@ class PostFragment : BaseFragment() {
 
         return root
     }
+
+    private fun observeData(){
+
+    }
 }

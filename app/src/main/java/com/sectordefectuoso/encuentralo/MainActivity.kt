@@ -24,5 +24,11 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_home, R.id.navigation_account, R.id.navigation_notifications))
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true);
+
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return super.onSupportNavigateUp()
     }
 }
