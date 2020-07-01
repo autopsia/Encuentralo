@@ -5,12 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import com.sectordefectuoso.encuentralo.R
 import com.sectordefectuoso.encuentralo.utils.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class PostFragment : BaseFragment() {
+    private val args: PostFragmentArgs by navArgs()
     private val postViewModel: PostViewModel by viewModels()
 
     override val TAG: String
@@ -28,5 +30,9 @@ class PostFragment : BaseFragment() {
         val root = inflater.inflate(getLayout(), container, false)
 
         return root
+    }
+
+    private fun observeData(){
+
     }
 }

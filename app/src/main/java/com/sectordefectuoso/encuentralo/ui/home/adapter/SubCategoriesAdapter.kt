@@ -7,10 +7,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.sectordefectuoso.encuentralo.R
 import com.sectordefectuoso.encuentralo.data.model.SubCategory
+import com.sectordefectuoso.encuentralo.ui.home.HomeFragmentDirections
+import com.sectordefectuoso.encuentralo.ui.home.subcategories.SubCategoryFragmentDirections
 
 
 class SubCategoriesAdapter(private var subCategories: ArrayList<SubCategory>) : RecyclerView.Adapter<SubCategoriesAdapter.MyViewHolder>() {
@@ -39,8 +42,9 @@ class SubCategoriesAdapter(private var subCategories: ArrayList<SubCategory>) : 
         holder.cardView.setOnClickListener {
             Toast.makeText(holder.text.context, "Click: ${subCategories[position].name}", Toast.LENGTH_SHORT).show()
 
-            val categoryId = subCategories[position].documentId
-
+            val subCategories = subCategories[position].documentId
+            val  action = SubCategoryFragmentDirections.actionSubCategoryFragmentToPostListFragment(subCategories)
+            holder.itemView.findNavController().navigate(action)
         }
     }
     
