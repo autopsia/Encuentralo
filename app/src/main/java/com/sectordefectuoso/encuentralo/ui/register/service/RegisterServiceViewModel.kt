@@ -67,8 +67,9 @@ class RegisterServiceViewModel(
     fun uploadImage(uri: Uri, uid: String) = liveData(coroutineContext) {
         emit(ResourceState.Loading)
         try {
-            val result = storageUC.updateImage(uri, uid)
-            emit(result)
+            storageUC.updateImage(uri, uid).collect {
+                emit(it)
+            }
         } catch (e: Exception) {
             emit(ResourceState.Failed(e.message!!))
         }

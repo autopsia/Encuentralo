@@ -9,6 +9,7 @@ interface IUserRepo {
     suspend fun getById(uid: String): ResourceState<User>
     suspend fun create(user: User): Flow<ResourceState<Boolean>>
     suspend fun update(user: User): Flow<ResourceState<Boolean>>
+    suspend fun updateLastLogin(uid: String): Flow<ResourceState<Boolean>>
     suspend fun createAuth(email: String, password: String): ResourceState<String>
     suspend fun updatePassword(email: String): ResourceState<Boolean>
     suspend fun logout(): ResourceState<Boolean>
