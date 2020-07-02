@@ -91,5 +91,22 @@
         <argument
             android:name="userId"
             app:argType="string" />
+        <action
+            android:id="@+id/action_postFragment_to_chatFragment"
+            app:destination="@id/chatFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="com.sectordefectuoso.encuentralo.ui.home.chat.ChatFragment"
+        android:label="Chat" >
+        <argument
+            android:name="serviceId"
+            app:argType="string" />
+        <argument
+            android:name="sellerId"
+            app:argType="string" />
+        <argument
+            android:name="userId"
+            app:argType="string" />
     </fragment>
 </navigation>

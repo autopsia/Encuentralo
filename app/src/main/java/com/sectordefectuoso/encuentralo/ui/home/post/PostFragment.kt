@@ -16,9 +16,11 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.google.firebase.auth.FirebaseAuth
 import com.sectordefectuoso.encuentralo.R
 import com.sectordefectuoso.encuentralo.utils.BaseFragment
 import com.sectordefectuoso.encuentralo.utils.ResourceState
@@ -31,6 +33,7 @@ import kotlinx.android.synthetic.main.item_postlist.*
 class PostFragment : BaseFragment() {
     private val args: PostFragmentArgs by navArgs()
     private val postViewModel: PostViewModel by viewModels()
+    private lateinit var auth: FirebaseAuth
 
     override val TAG: String
         get() = "PostFragment"
@@ -45,6 +48,7 @@ class PostFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(getLayout(), container, false)
+        auth = FirebaseAuth.getInstance()
 
         observeData()
         return root
@@ -61,7 +65,12 @@ class PostFragment : BaseFragment() {
                     val data = result.data
                     tvPostTitle.text = data?.title
                     tvPostDescripcion.text =data?.description
-
+                    btnPostChatear.setOnClickListener {
+                        if (auth.uid != null){
+                            val action = PostFragmentDirections.actionPostFragmentToChatFragment(data!!.documentId, data!!.userId, auth.uid!!)
+                            findNavController().navigate(action)
+                        }
+                    }
                 }
             }
         })
