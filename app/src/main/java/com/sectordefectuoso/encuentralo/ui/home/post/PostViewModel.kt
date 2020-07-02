@@ -6,6 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import com.sectordefectuoso.encuentralo.data.repository.PostListRepository
+import com.sectordefectuoso.encuentralo.data.repository.storage.StorageRepo
 import com.sectordefectuoso.encuentralo.utils.ResourceState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -52,6 +53,17 @@ class PostViewModel @ViewModelInject constructor(
             }
         } catch (e:Exception){
             emit(ResourceState.Failed(e.message.toString()))
+        }
+    }
+    val getImage = liveData(Dispatchers.IO) {
+        emit(ResourceState.Loading)
+        try {
+
+            postListRepository.loadImage("${getUserId()}.jpg").collect {
+                emit(it)
+            }
+        } catch (e: Exception) {
+            emit(ResourceState.Failed(e.message!!))
         }
     }
 }

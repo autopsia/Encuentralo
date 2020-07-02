@@ -75,13 +75,31 @@ class PostFragment : BaseFragment() {
                     Log.i(TAG, result.data.toString())
                     val data = result.data
                     tvPostUsername.text = "${data?.names} ${data?.lastNames}"
-                    tvPostLastOnline.text = "Online hace X horas"//DateUtils.getRelativeTimeSpanString(data.lastOnline)
-                    Glide.with(requireContext()).load(data?.imageUrl)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(false)
-                        .centerCrop().into(ivPostImageProfile)
+                    tvPostLastOnline.text = "Conectado hace "+ data?.lastLogin?.time?.let {
+                        DateUtils.getRelativeTimeSpanString(
+                            it
+                        )
+                    }
+
                     btnPostLlamar.setOnClickListener {
                         data?.phone?.let { phone -> makePhoneCall(phone) }
                     }
+                }
+            }
+        })
+
+        postViewModel.getImage.observe(viewLifecycleOwner, Observer { result ->
+            when(result){
+                is ResourceState.Loading -> {
+                    Log.i(TAG, result.toString())
+                }
+                is ResourceState.Success -> {
+                    Log.i(TAG, result.toString())
+                    Glide.with(requireContext()).load(result.data)
+                        .centerCrop().into(ivPostImageProfile)
+                }
+                is ResourceState.Failed -> {
+                    Log.i(TAG+"FAILED", result.message)
                 }
             }
         })
