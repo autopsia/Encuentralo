@@ -1,6 +1,7 @@
 package com.sectordefectuoso.encuentralo.data.model
 
 import com.google.firebase.firestore.DocumentId
+import com.google.firebase.firestore.ServerTimestamp
 import java.util.*
 
 data class User(
@@ -13,5 +14,8 @@ data class User(
     var phone: String = "",
     var email: String = "",
     var password: String = "",
-    var imageUrl: String = ""
+    @ServerTimestamp
+    var dateCreated: Date = Date(),
+    @ServerTimestamp
+    var lastLogin: Date = Date()
 )

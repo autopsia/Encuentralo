@@ -1,16 +1,32 @@
 package com.sectordefectuoso.encuentralo.data.repository.storage
 
+import android.content.Context
 import android.net.Uri
+import android.widget.ImageView
+import com.bumptech.glide.Glide
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.sectordefectuoso.encuentralo.utils.ResourceState
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 
 class StorageRepo: IStorageRepo {
-    private val storageRef: StorageReference = FirebaseStorage.getInstance().reference.child("User Images")
+    private val storage = FirebaseStorage.getInstance().reference
+    private val storageRef: StorageReference = storage.child("User")
 
-    override suspend fun updateImage(uri: Uri, uid: String): ResourceState<String> {
-        val result = storageRef.child("${uid}.jpg").putFile(uri).await().storage.downloadUrl.await().toString()
-        return ResourceState.Success(result)
+    override suspend fun updateImage(uri: Uri, uid: String): Flow<ResourceState<Boolean>> = flow {
+        try{
+            storageRef.child("${uid}.jpg").putFile(uri).await()
+            emit(ResourceState.Success(true))
+        }
+        catch (e: Exception){
+            emit(ResourceState.Failed(e.message!!))
+        }
+    }
+
+    override suspend fun loadImage(path: String): Flow<ResourceState<String>> = flow{
+        val result = storage.child(path).downloadUrl.await().toString()
+        emit(ResourceState.Success(result))
     }
 }

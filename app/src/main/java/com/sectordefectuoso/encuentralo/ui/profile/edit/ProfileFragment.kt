@@ -18,6 +18,8 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.signature.ObjectKey
 import com.sectordefectuoso.encuentralo.R
 import com.sectordefectuoso.encuentralo.data.model.User
 import com.google.gson.Gson
@@ -30,10 +32,13 @@ import com.sectordefectuoso.encuentralo.utils.Functions
 import com.sectordefectuoso.encuentralo.utils.ResourceState
 import com.sectordefectuoso.encuentralo.viewmodel.ProfileViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_account.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import java.io.File
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
 import java.util.*
+import kotlin.time.milliseconds
 
 class ProfileFragment : BaseFragment() {
 
@@ -53,7 +58,7 @@ class ProfileFragment : BaseFragment() {
     private lateinit var alertDialog: AlertDialog
     private var userBundle: User = User()
     private lateinit var photoFile: File
-    private lateinit var imageUri: Uri
+    private var imageUri: Uri? = null
 
     override val TAG: String get() = "ProfileFragment"
 
@@ -80,6 +85,13 @@ class ProfileFragment : BaseFragment() {
         btnAccountSave.setOnClickListener {
             if (validate()) {
                 var user = setUser()
+                alertDialog = showAlertDialog(
+                    requireContext(),
+                    R.layout.alert_dialog_2,
+                    "Guardando",
+                    "",
+                    null
+                )
                 uploadImage(user)
             }
         }
@@ -92,9 +104,26 @@ class ProfileFragment : BaseFragment() {
         txtAccountLastName.setText(userBundle.lastNames)
         txtAccountBirthdate.setText(SimpleDateFormat("dd/MM/yyyy").format(userBundle.birthdate))
         txtAccountPhone.setText(userBundle.phone)
-        Glide.with(requireContext()).load(userBundle?.imageUrl)
-            .diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).centerCrop()
-            .into(ivAccountPhotoE)
+        loadImage(userBundle.documentId)
+    }
+
+    private fun loadImage(uid: String) {
+        viewModel.loadImage("User/$uid.jpg")
+            .observe(viewLifecycleOwner, Observer { result ->
+                when (result) {
+                    is ResourceState.Loading -> {
+                        Log.d("LOADING_PHOTO", "Cargando imagen")
+                    }
+                    is ResourceState.Success -> {
+                        val url = result.data
+                        Glide.with(requireContext()).load(url)
+                            .centerCrop().into(ivAccountPhotoE)
+                    }
+                    is ResourceState.Failed -> {
+                        Log.d("ERROR_PHOTO", result.message)
+                    }
+                }
+            })
     }
 
     private fun takePhoto() {
@@ -181,6 +210,30 @@ class ProfileFragment : BaseFragment() {
         return user
     }
 
+    private fun uploadImage(user: User) {
+        if (imageUri != null) {
+            viewModel.uploadImage(imageUri!!, userBundle.documentId)
+                .observe(viewLifecycleOwner, Observer { result ->
+                    when (result) {
+                        is ResourceState.Success -> {
+                            updateUser(user)
+                        }
+                        is ResourceState.Failed -> {
+                            hideAlertDialog(alertDialog)
+                            Functions.showAlert(
+                                requireActivity(),
+                                alertDialog,
+                                "Atención",
+                                "No se pudo subir su imagen"
+                            )
+                        }
+                    }
+                })
+        } else {
+            updateUser(user)
+        }
+    }
+
     private fun updateUser(user: User) {
         viewModel.updateDB(user).observe(viewLifecycleOwner, Observer { result ->
             when (result) {
@@ -203,51 +256,19 @@ class ProfileFragment : BaseFragment() {
         })
     }
 
-    private fun uploadImage(user: User) {
-        if (imageUri != null) {
-            viewModel.uploadImage(imageUri, userBundle.documentId)
-                .observe(viewLifecycleOwner, Observer { result ->
-                    when (result) {
-                        is ResourceState.Loading -> {
-                            alertDialog = showAlertDialog(
-                                requireContext(),
-                                R.layout.alert_dialog_2,
-                                "Guardando",
-                                "",
-                                null
-                            )
-                        }
-                        is ResourceState.Success -> {
-                            user.imageUrl = result.data
-                            updateUser(user)
-                        }
-                        is ResourceState.Failed -> {
-                            hideAlertDialog(alertDialog)
-                            Functions.showAlert(
-                                requireActivity(),
-                                alertDialog,
-                                "Atención",
-                                "No se pudo subir su imagen"
-                            )
-                        }
-                    }
-                })
-        } else {
-            updateUser(user)
-        }
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == IMAGE_CAPTURE_CODE) {
                 imageUri = photoFile.toUri()
-                Glide.with(requireActivity()).load(photoFile).centerCrop().into(ivAccountPhotoE)
+                Glide.with(requireActivity()).load(photoFile).centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true).into(ivAccountPhotoE)
             }
             if (requestCode == IMAGE_PICK_CODE) {
                 imageUri = data?.data!!
-                Glide.with(requireActivity()).load(imageUri).centerCrop().into(ivAccountPhotoE)
+                Glide.with(requireActivity()).load(imageUri).centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true).into(ivAccountPhotoE)
             }
         }
     }

@@ -13,11 +13,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.signature.ObjectKey
 import com.google.gson.Gson
 import com.sectordefectuoso.encuentralo.LoginActivity
 import com.sectordefectuoso.encuentralo.R
 import com.sectordefectuoso.encuentralo.data.model.User
+import com.sectordefectuoso.encuentralo.data.repository.storage.StorageRepo
 import com.sectordefectuoso.encuentralo.data.repository.user.UserRepo
+import com.sectordefectuoso.encuentralo.domain.storage.StorageUC
 import com.sectordefectuoso.encuentralo.domain.user.UserUC
 import com.sectordefectuoso.encuentralo.utils.BaseFragment
 import com.sectordefectuoso.encuentralo.utils.Functions
@@ -36,7 +39,7 @@ class AccountFragment : BaseFragment() {
     private val viewModel by lazy {
         ViewModelProvider(
             this,
-            AccountViewModelFactory(UserUC(UserRepo()))
+            AccountViewModelFactory(UserUC(UserRepo()), StorageUC(StorageRepo()))
         ).get(AccountViewModel::class.java)
     }
     private var user: User? = null
@@ -81,15 +84,32 @@ class AccountFragment : BaseFragment() {
                         SimpleDateFormat("dd/MM/yyyy").format(user?.birthdate)
                     lblAccountPhone.text = user?.phone
                     lblAccountEmail.text = user?.email
-                    Glide.with(requireContext()).load(user?.imageUrl)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true)
-                        .centerCrop().into(ivAccountPhoto)
+                    loadImage(user!!.documentId)
                 }
                 is ResourceState.Failed -> {
                     Functions.showAlert(requireContext(), null, "Alerta", result.message)
                 }
             }
         })
+    }
+
+    private fun loadImage(uid: String) {
+        viewModel.loadImage("User/$uid.jpg")
+            .observe(viewLifecycleOwner, Observer { result ->
+                when (result) {
+                    is ResourceState.Loading -> {
+                        Log.d("LOADING_PHOTO", "Cargando imagen")
+                    }
+                    is ResourceState.Success -> {
+                        val url = result.data
+                        Glide.with(requireContext()).load(url)
+                            .centerCrop().into(ivAccountPhoto)
+                    }
+                    is ResourceState.Failed -> {
+                        Log.d("ERROR_PHOTO", result.message)
+                    }
+                }
+            })
     }
 
     private fun logout() {
