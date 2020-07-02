@@ -40,8 +40,6 @@ class CategoriesAdapter(private var categories: ArrayList<Category>) : RecyclerV
         if (categories[position].color != "")
             holder.cardView.setCardBackgroundColor(Color.parseColor(categories[position].color))
         holder.cardView.setOnClickListener {
-            Toast.makeText(holder.text.context, "Click: ${categories[position].name}", Toast.LENGTH_SHORT).show()
-
             val categoryId = categories[position].documentId
             val categoryName = categories[position].name
             val  action = HomeFragmentDirections.actionNavigationHomeToSubCategoryFragment(categoryId, categoryName)

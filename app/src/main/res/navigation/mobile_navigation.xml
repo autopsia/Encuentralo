@@ -88,5 +88,8 @@
             app:argType="string"
             app:nullable="true"
             android:defaultValue="Servicio" />
+        <argument
+            android:name="userId"
+            app:argType="string" />
     </fragment>
 </navigation>

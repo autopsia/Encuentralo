@@ -5,12 +5,16 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.sectordefectuoso.encuentralo.R
 import com.sectordefectuoso.encuentralo.ui.home.HomeFragmentDirections
+import com.sectordefectuoso.encuentralo.ui.home.adapter.PostListAdapter
 import com.sectordefectuoso.encuentralo.ui.home.subcategories.SubCategoryFragmentArgs
 import com.sectordefectuoso.encuentralo.utils.BaseFragment
 import com.sectordefectuoso.encuentralo.utils.ResourceState
@@ -38,11 +42,8 @@ class PostListFragment : BaseFragment() {
     ): View? {
         val root = inflater.inflate(getLayout(), container, false)
 
-        root.btnPostListTest.setOnClickListener {
-
-            val  action = PostListFragmentDirections.actionPostListFragmentToPostFragment("Hola Jordi")
-            root.findNavController().navigate(action)
-        }
+        val rvPostList : RecyclerView = root.findViewById(R.id.rvPostList)
+        rvPostList.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
 
         observeData()
 
@@ -56,7 +57,10 @@ class PostListFragment : BaseFragment() {
                     Log.i(TAG, result.toString())
                 }
                 is ResourceState.Success -> {
+                    Log.i(TAG, postListViewModel.getSubCategoryId())
                     Log.i(TAG, result.toString())
+                    var adapter = PostListAdapter(result.data)
+                    rvPostList.adapter = adapter
                 }
                 is ResourceState.Failed -> {
                     Log.i(TAG, result.toString())

@@ -11,6 +11,6 @@ data class Service (
     var status: Boolean = true,
     var createdDate: Date = Date(),
     var subcategoryId: String = "",
-    //var image: String = "", // Falta esto 
+    //var image: String = "", // Falta esto
     var userId: String = ""
 )

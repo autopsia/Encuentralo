@@ -212,5 +212,9 @@ class Functions {
             alertDialog?.dismiss()
             createDialog(contex, R.layout.alert_dialog_1, title, message, null)!!
         }
+
+        fun convertTime(itemTime : Date){
+
+        }
     }
 }
