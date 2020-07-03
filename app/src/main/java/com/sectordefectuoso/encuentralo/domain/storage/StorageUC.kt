@@ -8,6 +8,6 @@ import com.sectordefectuoso.encuentralo.utils.ResourceState
 import kotlinx.coroutines.flow.Flow
 
 class StorageUC(private val repo: IStorageRepo): IStorageUC {
-    override suspend fun updateImage(uri: Uri, uid: String): Flow<ResourceState<Boolean>> = repo.updateImage(uri, uid)
+    override suspend fun updateImage(uri: Uri, uid: String, path: String): Flow<ResourceState<Boolean>> = repo.updateImage(uri, uid, path)
     override suspend fun loadImage(path: String): Flow<ResourceState<String>> = repo.loadImage(path)
 }

@@ -52,10 +52,10 @@ class ServiceManageViewModel(private val serviceUC: IServiceUC,
         }
     }
 
-    fun uploadImage(uri: Uri, uid: String) = liveData(coroutineContext) {
+    fun uploadImage(uri: Uri, uid: String, path: String) = liveData(coroutineContext) {
         emit(ResourceState.Loading)
         try {
-            storageUC.updateImage(uri, uid).collect {
+            storageUC.updateImage(uri, uid, path).collect {
                 emit(it)
             }
         } catch (e: Exception) {
@@ -66,8 +66,15 @@ class ServiceManageViewModel(private val serviceUC: IServiceUC,
     fun saveDB(service: Service) = liveData(coroutineContext) {
         emit(ResourceState.Loading)
         try {
-            serviceUC.update(service).collect {
-                emit(it)
+            if(service.documentId != "") {
+                serviceUC.update(service).collect {
+                    emit(it)
+                }
+            }
+            else {
+                serviceUC.create(service).collect {
+                    emit(it)
+                }
             }
         } catch (e: Exception) {
             emit(ResourceState.Failed(e.message!!))

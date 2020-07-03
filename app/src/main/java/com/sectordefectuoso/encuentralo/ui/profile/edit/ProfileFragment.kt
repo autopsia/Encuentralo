@@ -213,7 +213,7 @@ class ProfileFragment : BaseFragment() {
 
     private fun uploadImage(user: User) {
         if (imageUri != null) {
-            viewModel.uploadImage(imageUri!!, userBundle.documentId)
+            viewModel.uploadImage(imageUri!!, userBundle.documentId, "User")
                 .observe(viewLifecycleOwner, Observer { result ->
                     when (result) {
                         is ResourceState.Success -> {

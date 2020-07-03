@@ -13,11 +13,11 @@ import kotlinx.coroutines.tasks.await
 
 class StorageRepo: IStorageRepo {
     private val storage = FirebaseStorage.getInstance().reference
-    private val storageRef: StorageReference = storage.child("User")
+    private val storageRef: StorageReference = storage
 
-    override suspend fun updateImage(uri: Uri, uid: String): Flow<ResourceState<Boolean>> = flow {
+    override suspend fun updateImage(uri: Uri, uid: String, path: String): Flow<ResourceState<Boolean>> = flow {
         try{
-            storageRef.child("${uid}.jpg").putFile(uri).await()
+            storageRef.child(path).child("${uid}.jpg").putFile(uri).await()
             emit(ResourceState.Success(true))
         }
         catch (e: Exception){

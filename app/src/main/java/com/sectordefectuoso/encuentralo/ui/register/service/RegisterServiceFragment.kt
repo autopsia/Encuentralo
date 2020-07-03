@@ -251,7 +251,7 @@ class RegisterServiceFragment : BaseFragment() {
     }
 
     private fun uploadImage(user: User, service: Service) {
-        viewModel.uploadImage(imageUri, user.documentId).observe(viewLifecycleOwner, Observer { result ->
+        viewModel.uploadImage(imageUri, user.documentId, "User").observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is ResourceState.Success -> {
                     createUser(user, service)

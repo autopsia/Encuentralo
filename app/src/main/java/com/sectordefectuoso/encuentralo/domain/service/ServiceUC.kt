@@ -10,7 +10,7 @@ class ServiceUC(private val repo: IServiceRepo) : IServiceUC {
 
     override suspend fun getById(uid: String): ResourceState<Service> = repo.getById(uid)
 
-    override suspend fun create(service: Service): Flow<ResourceState<Boolean>> = repo.create(service)
+    override suspend fun create(service: Service): Flow<ResourceState<String>> = repo.create(service)
 
-    override suspend fun update(service: Service): Flow<ResourceState<Boolean>> = repo.update(service)
+    override suspend fun update(service: Service): Flow<ResourceState<String>> = repo.update(service)
 }

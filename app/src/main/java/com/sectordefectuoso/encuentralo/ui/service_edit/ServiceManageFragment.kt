@@ -13,12 +13,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.cardview.widget.CardView
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
+import com.sectordefectuoso.encuentralo.MainActivity
 import com.sectordefectuoso.encuentralo.R
 import com.sectordefectuoso.encuentralo.data.model.Category
 import com.sectordefectuoso.encuentralo.data.model.Service
@@ -32,9 +35,12 @@ import com.sectordefectuoso.encuentralo.domain.service.ServiceUC
 import com.sectordefectuoso.encuentralo.domain.storage.StorageUC
 import com.sectordefectuoso.encuentralo.ui.register.service.RegisterServiceViewModel
 import com.sectordefectuoso.encuentralo.utils.BaseFragment
+import com.sectordefectuoso.encuentralo.utils.Functions
 import com.sectordefectuoso.encuentralo.utils.ResourceState
 import com.sectordefectuoso.encuentralo.viewmodel.RegisterServiceViewModelFactory
 import com.sectordefectuoso.encuentralo.viewmodel.ServiceManageViewModelFactory
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_service.*
 import kotlinx.android.synthetic.main.fragment_register_service.*
 import kotlinx.android.synthetic.main.fragment_service_manage.*
 import java.io.File
@@ -42,6 +48,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.log
+import kotlin.reflect.typeOf
 
 class ServiceManageFragment : BaseFragment() {
 
@@ -57,8 +64,9 @@ class ServiceManageFragment : BaseFragment() {
     private var init = 0
     private val IMAGE_PICK_CODE = 1001;
     private val IMAGE_CAPTURE_CODE = 1002;
+    private var imageUri: Uri? = null
     private lateinit var photoFile: File
-    private lateinit var imageUri: Uri
+    private lateinit var alertDialog: AlertDialog
 
     private val viewModel by lazy {
         ViewModelProvider(
@@ -79,18 +87,17 @@ class ServiceManageFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(getLayout(), container, false)
-        setService(root)
+        val cboServCategory = root.findViewById<Spinner>(R.id.cboServCategory)
+        val btnServPhoto = root.findViewById<CardView>(R.id.btnServPhoto)
+        val btnServSave = root.findViewById<Button>(R.id.btnServSave)
+
+        loadService(root)
         if(idSubCategory != null) {
             getIdCategory(idSubCategory)
         }
         else{
             setCategories()
         }
-        return root
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
 
         cboServCategory.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -111,11 +118,16 @@ class ServiceManageFragment : BaseFragment() {
             takePhoto()
         }
         btnServSave.setOnClickListener {
-
+            if(validate()) {
+                val data = setService()
+                createService(data)
+            }
         }
+
+        return root
     }
 
-    private fun setService(root: View) {
+    private fun loadService(root: View) {
         val args = arguments?.getString("service")
         if(args != null) {
             service = Gson().fromJson(args, Service::class.java)
@@ -178,9 +190,9 @@ class ServiceManageFragment : BaseFragment() {
 
                     cboServSubcategory.adapter = subcategoryAdapter
                     if(idSubCategory != "" && init == 0) {
-                        val index = subcategories.map {it.documentId}.indexOf(idSubCategory)
+                        var index = subcategories.map {it.documentId}.indexOf(idSubCategory)
+                        if(index == -1) { index = 0 }
                         cboServSubcategory.setSelection(index)
-                        init++
                     }
                 }
                 is ResourceState.Failed -> {
@@ -243,6 +255,87 @@ class ServiceManageFragment : BaseFragment() {
 
         var storageDirectory = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         return File.createTempFile(fileName, ".jpg", storageDirectory)
+    }
+
+    private fun validate(): Boolean {
+        var valid = true
+        if (Functions.validateSpinner(cboServSubcategory)) valid = false
+        if (Functions.validateTextView(txtServTitle, 15)) valid = false
+        if (Functions.validateTextView(txtServDescription, 20)) valid = false
+
+        return valid
+    }
+
+    private fun setService(): Service {
+        var data = Service()
+        data.title = txtServTitle.text.toString().trim()
+        data.description = txtServDescription.text.toString().trim()
+        data.subcategoryId = subcategories[cboServSubcategory.selectedItemPosition].documentId
+
+        if(service != null) {
+            data.documentId = service.documentId
+        }
+
+        return data
+    }
+
+    private fun createService(service: Service) {
+        viewModel.saveDB(service).observe(viewLifecycleOwner, Observer { result ->
+            when (result) {
+                is ResourceState.Loading -> {
+                    alertDialog = showAlertDialog(
+                        requireContext(),
+                        R.layout.alert_dialog_2,
+                        "Guardando",
+                        "",
+                        null
+                    )
+                }
+                is ResourceState.Success -> {
+                    if(imageUri != null) {
+                        uploadImage(result.data)
+                    }
+                    else{
+                        goBack()
+                    }
+                }
+                is ResourceState.Failed -> {
+                    Log.d("ERROR_DB", result.message)
+                    hideAlertDialog(alertDialog)
+                    Functions.showAlert(
+                        requireActivity(),
+                        alertDialog,
+                        "Atención",
+                        Functions.DB_FAIL
+                    )
+                }
+            }
+        })
+    }
+
+    private fun uploadImage(uid: String) {
+        viewModel.uploadImage(imageUri!!, uid, "Service").observe(viewLifecycleOwner, Observer { result ->
+            when (result) {
+                is ResourceState.Success -> {
+                    goBack()
+                }
+                is ResourceState.Failed -> {
+                    hideAlertDialog(alertDialog)
+                    Functions.showAlert(
+                        requireActivity(),
+                        alertDialog,
+                        "Atención",
+                        "No se pudo subir su imagen"
+                    )
+                }
+            }
+        })
+    }
+
+    private fun goBack() {
+        hideAlertDialog(alertDialog)
+        nav_host_service.findNavController()
+            .popBackStack(R.id.navigation_service, false)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

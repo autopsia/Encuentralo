@@ -28,10 +28,10 @@ class ProfileViewModel(private val userCase: IUserUC, private val storageUC: ISt
         }
     }
 
-    fun uploadImage(uri: Uri, uid: String) = liveData(coroutineContext) {
+    fun uploadImage(uri: Uri, uid: String, path: String) = liveData(coroutineContext) {
         emit(ResourceState.Loading)
         try {
-            storageUC.updateImage(uri, uid).collect {
+            storageUC.updateImage(uri, uid, path).collect {
                 emit(it)
             }
         } catch (e: Exception) {

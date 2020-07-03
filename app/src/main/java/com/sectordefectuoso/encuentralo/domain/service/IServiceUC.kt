@@ -7,6 +7,6 @@ import kotlinx.coroutines.flow.Flow
 interface IServiceUC {
     suspend fun listByUser(): Flow<ResourceState<List<Service>>>
     suspend fun getById(uid: String): ResourceState<Service>
-    suspend fun create(service: Service): Flow<ResourceState<Boolean>>
-    suspend fun update(service: Service): Flow<ResourceState<Boolean>>
+    suspend fun create(service: Service): Flow<ResourceState<String>>
+    suspend fun update(service: Service): Flow<ResourceState<String>>
 }
