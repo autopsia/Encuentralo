@@ -8,9 +8,12 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.tasks.await
 
 class CategoryRepo : ICategoryRepo {
-    private val categoryRef = FirebaseFirestore.getInstance().collection("categories")
+    private val db = FirebaseFirestore.getInstance()
+    private val categoryRef = db.collection("categories")
 
     override suspend fun getAll(): Flow<ResourceState<List<Category>>> = callbackFlow {
         val subscription = categoryRef.addSnapshotListener { snapshot, exception ->
@@ -44,5 +47,17 @@ class CategoryRepo : ICategoryRepo {
             subscription.remove()
             cancel()
         }
+    }
+
+    override suspend fun getCategoryBySubcategory(idSubCategory: String): Flow<ResourceState<String>> = flow {
+        var key = String()
+        val documents = db.collectionGroup("subcategories").get().await()
+        for (document in documents) {
+            if(document.id == idSubCategory) {
+                key = document.reference.parent.parent!!.id
+            }
+        }
+
+        emit(ResourceState.Success(key))
     }
 }

@@ -10,4 +10,6 @@ class CategoryUC(private val repo: ICategoryRepo): ICategoryUC {
     override suspend fun getAll(): Flow<ResourceState<List<Category>>> = repo.getAll()
 
     override suspend fun getSubcategoriesByCategory(idCategory: String): Flow<ResourceState<List<SubCategory>>> = repo.getSubcategoriesByCategory(idCategory)
+
+    override suspend fun getCategoryBySubcategory(idSubCategory: String): Flow<ResourceState<String>> = repo.getCategoryBySubcategory(idSubCategory)
 }

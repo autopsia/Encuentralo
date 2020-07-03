@@ -39,15 +39,15 @@
                         android:id="@+id/btnAccountEdit"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
                         android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
                         android:background="#00FFFFFF"
                         android:minHeight="24dp"
                         android:text="EDITAR"
                         android:textColor="#FFFFFF"
                         android:textSize="16sp"
                         android:textStyle="bold"
-                        app:layout_constraintEnd_toStartOf="@+id/btnAccountLogout"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <Button
@@ -71,22 +71,27 @@
                         android:layout_height="150dp"
                         app:cardBackgroundColor="#FFFFFF"
                         app:cardCornerRadius="75dp"
+                        app:cardElevation="0dp"
+                        app:cardMaxElevation="0dp"
                         app:contentPadding="5dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/btnAccountEdit">
+                        app:layout_constraintTop_toTopOf="parent">
 
                         <androidx.cardview.widget.CardView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            app:cardCornerRadius="70dp">
+                            android:backgroundTint="#A6B6B6B6"
+                            app:cardCornerRadius="70dp"
+                            app:cardElevation="0dp"
+                            app:cardMaxElevation="0dp">
 
                             <ImageView
                                 android:id="@+id/ivAccountPhoto"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                tools:src="@tools:sample/avatars" />
+                                app:srcCompat="@drawable/ic_user" />
                         </androidx.cardview.widget.CardView>
 
                     </androidx.cardview.widget.CardView>
@@ -221,13 +226,24 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:layout_marginBottom="70dp"
                     android:textColor="#47525E"
                     android:textSize="18sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/guideline10"
                     app:layout_constraintStart_toStartOf="@+id/guideline9"
                     app:layout_constraintTop_toBottomOf="@+id/textView27" />
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fabService"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:clickable="true"
+                    android:src="@drawable/ic_service"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/lblAccountEmail" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>

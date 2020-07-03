@@ -75,7 +75,7 @@ class RegisterServiceFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        var view = inflater.inflate(R.layout.fragment_register_service, container, false)
+        var view = inflater.inflate(getLayout(), container, false)
         setCategories()
         return view
     }
@@ -180,7 +180,7 @@ class RegisterServiceFragment : BaseFragment() {
                 }
                 is ResourceState.Success -> {
                     subcategoryList = result.data
-                    if (subcategoryList.size == 0) {
+                    if (subcategoryList.isEmpty()) {
                         subcategoryList += SubCategory("", "Seleccione", 0)
                     }
                     val items = subcategoryList.map { it.name }
