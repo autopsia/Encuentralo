@@ -2,6 +2,7 @@ package com.sectordefectuoso.encuentralo.data.repository
 
 import android.net.Uri
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.sectordefectuoso.encuentralo.data.model.Service
@@ -27,7 +28,7 @@ class PostListRepository @Inject constructor() : IPostListRepository {
     private val storageRef: StorageReference = storage.child("User")
 
     override suspend fun getServiceListBySubCategoryId(subCategoryId: String): Flow<ResourceState<List<Service>>> = callbackFlow {
-        val subscription = serviceRef.whereEqualTo("subcategoryId", subCategoryId).addSnapshotListener { snapshot, exception ->
+        val subscription = serviceRef.whereEqualTo("subcategoryId", subCategoryId).orderBy("createdDate", Query.Direction.DESCENDING).addSnapshotListener { snapshot, exception ->
             offer(
                 ResourceState.Success(snapshot!!.toObjects(Service::class.java))
             )

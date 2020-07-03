@@ -34,12 +34,13 @@
 
         <ImageButton
             android:id="@+id/ibChat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_button_rounded"
+            android:layout_width="45dp"
+            android:layout_height="0dp"
+            android:background="@android:drawable/presence_online"
             android:backgroundTint="#FF9800"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/etChat"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/etChat"
             app:srcCompat="@drawable/ic_send" />
 
         <View
