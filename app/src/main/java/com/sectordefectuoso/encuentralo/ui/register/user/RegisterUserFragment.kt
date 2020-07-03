@@ -186,7 +186,6 @@ class RegisterUserFragment : BaseFragment() {
             when (result) {
                 is ResourceState.Success -> {
                     hideAlertDialog(alertDialog)
-                    Thread.sleep(1500)
                     val intent = Intent(requireContext(), MainActivity::class.java)
                     startActivity(intent)
                     requireActivity().finish()

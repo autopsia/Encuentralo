@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -16,7 +17,9 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.signature.ObjectKey
 import com.google.gson.Gson
 import com.sectordefectuoso.encuentralo.LoginActivity
+import com.sectordefectuoso.encuentralo.MainActivity
 import com.sectordefectuoso.encuentralo.R
+import com.sectordefectuoso.encuentralo.ServiceActivity
 import com.sectordefectuoso.encuentralo.data.model.User
 import com.sectordefectuoso.encuentralo.data.repository.storage.StorageRepo
 import com.sectordefectuoso.encuentralo.data.repository.user.UserRepo
@@ -26,6 +29,7 @@ import com.sectordefectuoso.encuentralo.utils.BaseFragment
 import com.sectordefectuoso.encuentralo.utils.Functions
 import com.sectordefectuoso.encuentralo.utils.ResourceState
 import com.sectordefectuoso.encuentralo.viewmodel.AccountViewModelFactory
+import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_account.*
 import java.text.SimpleDateFormat
@@ -67,6 +71,16 @@ class AccountFragment : BaseFragment() {
         }
         btnAccountLogout.setOnClickListener {
             logout()
+        }
+        fabService.setOnClickListener {
+            var callbackOk: (() -> Unit)? = {
+                val intent = Intent(requireContext(), ServiceActivity::class.java)
+                startActivity(intent)
+                requireActivity().finish()
+            }
+            val title = "¿Desea ingresar al módulo de servicio?"
+            val message = "Aqui podrá administrar los servicios que ofrece"
+            Functions.createDialog(requireContext(), R.layout.alert_dialog_3, title, message, callbackOk)
         }
     }
 

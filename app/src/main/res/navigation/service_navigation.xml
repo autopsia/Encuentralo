@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/service_navigation"
+    app:startDestination="@id/navigation_service">
+
+    <fragment
+        android:id="@+id/navigation_service"
+        android:name="com.sectordefectuoso.encuentralo.ui.service.ServiceFragment"
+        android:label="@string/title_service"
+        tools:layout="@layout/fragment_service" >
+        <action
+            android:id="@+id/action_navigation_service_to_serviceManageFragment"
+            app:destination="@id/serviceManageFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_service_history"
+        android:name="com.sectordefectuoso.encuentralo.ui.service_history.ServiceHistoryFragment"
+        android:label="@string/title_service_history"
+        tools:layout="@layout/fragment_service_history" />
+    <fragment
+        android:id="@+id/serviceManageFragment"
+        android:name="com.sectordefectuoso.encuentralo.ui.service_edit.ServiceManageFragment"
+        android:label="Servicio"
+        tools:layout="@layout/fragment_service_manage" />
+</navigation>

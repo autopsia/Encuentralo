@@ -6,6 +6,8 @@ import com.sectordefectuoso.encuentralo.utils.ResourceState
 import kotlinx.coroutines.flow.Flow
 
 class ServiceUC(private val repo: IServiceRepo) : IServiceUC {
+    override suspend fun listByUser(): Flow<ResourceState<List<Service>>> = repo.listByUser()
+
     override suspend fun getById(uid: String): ResourceState<Service> = repo.getById(uid)
 
     override suspend fun create(service: Service): Flow<ResourceState<Boolean>> = repo.create(service)

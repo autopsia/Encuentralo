@@ -18,6 +18,7 @@ import com.sectordefectuoso.encuentralo.R
 import io.grpc.KnownLength
 import kotlinx.android.synthetic.main.alert_dialog_1.view.*
 import kotlinx.android.synthetic.main.alert_dialog_2.view.*
+import kotlinx.android.synthetic.main.alert_dialog_3.view.*
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -143,8 +144,8 @@ class Functions {
             when (layout) {
                 R.layout.alert_dialog_1 -> {
                     alert.window?.setBackgroundDrawable(ColorDrawable(0))
-                    dialog.lblDialog1Title.setText(title)
-                    dialog.lblDialog1Message.setText(message)
+                    dialog.lblDialog1Title.text = title
+                    dialog.lblDialog1Message.text = message
                     dialog.btnDialog1Ok.setOnClickListener {
                         if (callbackOk != null) {
                             callbackOk()
@@ -152,7 +153,7 @@ class Functions {
                         alert.dismiss()
                     }
                 }
-                else -> {
+                R.layout.alert_dialog_2 -> {
                     val rotate = RotateAnimation(
                         0f, 360f,
                         Animation.RELATIVE_TO_SELF, 0.5f,
@@ -160,8 +161,25 @@ class Functions {
                     )
                     rotate.duration = 1000
                     rotate.repeatCount = Animation.INFINITE
-                    dialog.lblDialog2Title.setText(title)
+                    dialog.lblDialog2Title.text = title
                     dialog.ivDialog2Image.startAnimation(rotate)
+                }
+                R.layout.alert_dialog_3 -> {
+                    alert.window?.setBackgroundDrawable(ColorDrawable(0))
+                    dialog.lblDialog3Title.text = title
+                    dialog.lblDialog3Message.text = message
+                    dialog.btnDialog3Yes.setOnClickListener {
+                        if (callbackOk != null) {
+                            callbackOk()
+                        }
+                        alert.dismiss()
+                    }
+                    dialog.btnDialog3No.setOnClickListener {
+                        alert.dismiss()
+                    }
+                }
+                else -> {
+
                 }
             }
 
