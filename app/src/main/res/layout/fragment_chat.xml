@@ -10,10 +10,13 @@
         android:id="@+id/rvChat"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:padding="16dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@+id/llChat"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:reverseLayout="false"
+        app:stackFromEnd="true" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/llChat"
@@ -25,32 +28,40 @@
             android:id="@+id/etChat"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="@drawable/bg_chat_msg"
+            android:backgroundTint="#E8E8E8"
             android:ems="10"
             android:hint="Escribe tu mensaje"
             android:inputType="textPersonName"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/ibChat"
+            app:layout_constraintEnd_toStartOf="@+id/ibChatPrice"
             app:layout_constraintStart_toStartOf="parent" />
 
         <ImageButton
-            android:id="@+id/ibChat"
-            android:layout_width="45dp"
-            android:layout_height="0dp"
+            android:id="@+id/ibChatPrice"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_marginBottom="5dp"
+            android:background="@android:drawable/presence_online"
+            android:backgroundTint="#4CAF50"
+            app:layout_constraintBottom_toBottomOf="@+id/etChat"
+            app:layout_constraintEnd_toStartOf="@+id/ibChatSend"
+            app:layout_constraintTop_toTopOf="@+id/etChat"
+            app:layout_constraintVertical_bias="0.444"
+            app:srcCompat="@drawable/ic_price" />
+
+        <ImageButton
+            android:id="@+id/ibChatSend"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
             android:background="@android:drawable/presence_online"
             android:backgroundTint="#FF9800"
             app:layout_constraintBottom_toBottomOf="@+id/etChat"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/etChat"
+            app:layout_constraintVertical_bias="1.0"
             app:srcCompat="@drawable/ic_send" />
-
-        <View
-            android:id="@+id/divider"
-            android:layout_width="409dp"
-            android:layout_height="1dp"
-            android:background="?android:attr/listDivider"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
