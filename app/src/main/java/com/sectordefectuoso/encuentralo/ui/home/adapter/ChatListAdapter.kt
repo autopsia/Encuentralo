@@ -38,7 +38,7 @@ class ChatListAdapter ( private val chatList : ArrayList<String>, val serviceId:
         holder.text.text = "Chat $position"
 
         holder.cardView.setOnClickListener {
-            val list = chatList[position]
+            val list = chatList[position]+1
             val  action = ChatListFragmentDirections.actionChatListFragmentToChatFragment(serviceId , chatList[position] , chatList[position])
             holder.itemView.findNavController().navigate(action)
         }
