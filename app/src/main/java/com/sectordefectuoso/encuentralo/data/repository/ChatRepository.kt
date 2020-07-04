@@ -69,6 +69,7 @@ class ChatRepository @Inject constructor() {
                 )
 
                 chatRef.document(serviceId).collection(authorId).document().set(userMap).await()
+                chatRef.document(serviceId).update("chatList", FieldValue.arrayUnion(authorId))
                 emit(ResourceState.Success(true))
             } else {
                 throw Exception("No se pudo registrar en la base de datos")

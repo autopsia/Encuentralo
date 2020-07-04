@@ -55,10 +55,13 @@ class PostFragment : BaseFragment() {
         observeData()
         val btnPostLlamar : Button = root.findViewById(R.id.btnPostLlamar)
         val btnPostChatear : Button = root.findViewById(R.id.btnPostChatear)
+        val btnPostSeeAllMessages : Button = root.findViewById(R.id.btnPostSeeAllMessages)
+
 
         if (args.userId == auth.uid){
-            btnPostLlamar.visibility = View.GONE
-            btnPostChatear.visibility = View.GONE
+            btnPostLlamar.visibility = View.INVISIBLE
+            btnPostChatear.visibility = View.INVISIBLE
+            btnPostSeeAllMessages.visibility = View.VISIBLE
         }
 
         return root
@@ -86,6 +89,16 @@ class PostFragment : BaseFragment() {
                                     )
                                 findNavController().navigate(action)
                             }
+                        }
+                    } else {
+                        btnPostSeeAllMessages.setOnClickListener {
+                            val action =
+                                PostFragmentDirections.actionPostFragmentToChatListFragment(
+                                    data!!.documentId,
+                                    data!!.userId,
+                                    auth.uid!!
+                                )
+                            findNavController().navigate(action)
                         }
                     }
                 }
