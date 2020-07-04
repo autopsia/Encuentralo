@@ -110,7 +110,7 @@
     <fragment
         android:id="@+id/chatListFragment"
         android:name="com.sectordefectuoso.encuentralo.ui.home.post.ChatList.ChatListFragment"
-        android:label="ChatListFragment" >
+        android:label="Chats" >
         <action
             android:id="@+id/action_chatListFragment_to_chatFragment"
             app:destination="@id/chatFragment" />

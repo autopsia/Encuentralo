@@ -35,10 +35,10 @@ class ChatListAdapter ( private val chatList : ArrayList<String>, val serviceId:
     }
 
     override fun onBindViewHolder(holder: ChatListViewHolder, position: Int) {
-        holder.text.text = "Chat $position"
+        holder.text.text = "Chat ${position + 1}"
 
         holder.cardView.setOnClickListener {
-            val list = chatList[position]+1
+            val list = chatList[position]
             val  action = ChatListFragmentDirections.actionChatListFragmentToChatFragment(serviceId , chatList[position] , chatList[position])
             holder.itemView.findNavController().navigate(action)
         }
