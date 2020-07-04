@@ -128,5 +128,18 @@
         android:id="@+id/navigation_history"
         android:name="com.sectordefectuoso.encuentralo.ui.history.HistoryFragment"
         android:label="Historial"
-        tools:layout="@layout/fragment_history" />
+        tools:layout="@layout/fragment_history" >
+        <action
+            android:id="@+id/action_navigation_history_to_chatFragment"
+            app:destination="@id/chatFragment" />
+        <argument
+            android:name="serviceId"
+            app:argType="string" />
+        <argument
+            android:name="sellerId"
+            app:argType="string" />
+        <argument
+            android:name="userId"
+            app:argType="string" />
+    </fragment>
 </navigation>
