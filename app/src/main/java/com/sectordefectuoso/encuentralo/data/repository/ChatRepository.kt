@@ -64,7 +64,8 @@ class ChatRepository @Inject constructor() {
                 val userMap = hashMapOf(
                     "message" to chatMessage.message,
                     "dateCreated" to FieldValue.serverTimestamp(),
-                    "author" to chatMessage.author
+                    "author" to chatMessage.author,
+                    "type" to chatMessage.type
                 )
 
                 chatRef.document(serviceId).collection(authorId).document().set(userMap).await()

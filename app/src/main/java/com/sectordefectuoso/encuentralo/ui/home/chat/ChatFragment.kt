@@ -53,10 +53,12 @@ class ChatFragment : BaseFragment() {
         observeData()
 
         var ibChatSend : ImageButton = root.findViewById(R.id.ibChatSend)
+        val ibChatPrice : ImageButton = root.findViewById(R.id.ibChatPrice)
+
         ibChatSend.setOnClickListener {
             Log.i(TAG, "IBCHATSEND")
             if (etChat.text.isEmpty()){return@setOnClickListener}
-            var message:ChatMessage = ChatMessage("", etChat.text.toString(), Date(), auth.uid ?: "")
+            var message:ChatMessage = ChatMessage("", etChat.text.toString(), Date(), auth.uid ?: "", 1)
             Log.i(TAG, message.toString())
             uiScope.launch {
                 sendMessage(message)
@@ -64,6 +66,16 @@ class ChatFragment : BaseFragment() {
             etChat.text.clear()
         }
 
+        ibChatPrice.setOnClickListener {
+            Log.i(TAG, "IBCHATSEND")
+            if (etChat.text.isEmpty()){return@setOnClickListener}
+            var message:ChatMessage = ChatMessage("", etChat.text.toString(), Date(), auth.uid ?: "", 2)
+            Log.i(TAG, message.toString())
+            uiScope.launch {
+                sendMessage(message)
+            }
+            etChat.text.clear()
+        }
 
         return root
 

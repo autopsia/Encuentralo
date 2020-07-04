@@ -9,6 +9,7 @@ data class ChatMessage(
     val documentId: String = "",
     val message: String = "",
     val dateCreated: Date = Date(),
-    val author: String = ""
+    val author: String = "",
+    val type: Int = 1
 ){
 }

@@ -7,10 +7,12 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.text.format.DateUtils
+import android.transition.Visibility
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -51,6 +53,14 @@ class PostFragment : BaseFragment() {
         auth = FirebaseAuth.getInstance()
 
         observeData()
+        val btnPostLlamar : Button = root.findViewById(R.id.btnPostLlamar)
+        val btnPostChatear : Button = root.findViewById(R.id.btnPostChatear)
+
+        if (args.userId == auth.uid){
+            btnPostLlamar.visibility = View.GONE
+            btnPostChatear.visibility = View.GONE
+        }
+
         return root
     }
 
@@ -65,10 +75,17 @@ class PostFragment : BaseFragment() {
                     val data = result.data
                     tvPostTitle.text = data?.title
                     tvPostDescripcion.text =data?.description
-                    btnPostChatear.setOnClickListener {
-                        if (auth.uid != null){
-                            val action = PostFragmentDirections.actionPostFragmentToChatFragment(data!!.documentId, data!!.userId, auth.uid!!)
-                            findNavController().navigate(action)
+                    if (btnPostChatear.visibility == View.VISIBLE) {
+                        btnPostChatear.setOnClickListener {
+                            if (auth.uid != null) {
+                                val action =
+                                    PostFragmentDirections.actionPostFragmentToChatFragment(
+                                        data!!.documentId,
+                                        data!!.userId,
+                                        auth.uid!!
+                                    )
+                                findNavController().navigate(action)
+                            }
                         }
                     }
                 }
@@ -89,9 +106,10 @@ class PostFragment : BaseFragment() {
                             it
                         )
                     }
-
-                    btnPostLlamar.setOnClickListener {
-                        data?.phone?.let { phone -> makePhoneCall(phone) }
+                    if (btnPostLlamar.visibility == View.VISIBLE) {
+                        btnPostLlamar.setOnClickListener {
+                            data?.phone?.let { phone -> makePhoneCall(phone) }
+                        }
                     }
                 }
             }
