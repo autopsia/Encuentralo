@@ -50,10 +50,10 @@ class ChatFragment : BaseFragment() {
         val root = inflater.inflate(getLayout(), container, false)
         auth = FirebaseAuth.getInstance()
 
-        observeData()
-
         var ibChatSend : ImageButton = root.findViewById(R.id.ibChatSend)
         val ibChatPrice : ImageButton = root.findViewById(R.id.ibChatPrice)
+
+        observeData()
 
         ibChatSend.setOnClickListener {
             Log.i(TAG, "IBCHATSEND")
@@ -66,10 +66,13 @@ class ChatFragment : BaseFragment() {
             etChat.text.clear()
         }
 
+        if (ibChatPrice.visibility == View.VISIBLE)
         ibChatPrice.setOnClickListener {
             Log.i(TAG, "IBCHATSEND")
             if (etChat.text.isEmpty()){return@setOnClickListener}
-            var message:ChatMessage = ChatMessage("", etChat.text.toString(), Date(), auth.uid ?: "", 2)
+            //TODO: FALTA VALIDAR SOLO NUMBEROS
+            var jsonString = "{\"emitter\": \"${auth.uid}\",\"receptor\": \"\",\"price\": ${etChat.text.toString()},\"isAccepted\": 0}"
+            var message:ChatMessage = ChatMessage("", jsonString, Date(), auth.uid ?: "", 2)
             Log.i(TAG, message.toString())
             uiScope.launch {
                 sendMessage(message)
@@ -78,7 +81,6 @@ class ChatFragment : BaseFragment() {
         }
 
         return root
-
 
     }
 
@@ -89,7 +91,7 @@ class ChatFragment : BaseFragment() {
                     Log.i(TAG, result.toString())
                 }
                 is ResourceState.Success -> {
-                    val adapter = ChatAdapter(result.data as ArrayList<ChatMessage>)
+                    val adapter = ChatAdapter(result.data as ArrayList<ChatMessage>, ibChatPrice)
                     rvChat.adapter = adapter
                     rvChat.scrollToPosition((rvChat.adapter?.itemCount ?: 1) - 1)
                     Log.i(TAG, result.data.toString())

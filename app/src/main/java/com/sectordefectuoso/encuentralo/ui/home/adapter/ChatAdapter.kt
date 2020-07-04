@@ -5,14 +5,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.gson.Gson
 import com.sectordefectuoso.encuentralo.R
+import com.sectordefectuoso.encuentralo.data.model.Agreement
 import com.sectordefectuoso.encuentralo.data.model.ChatMessage
+import org.json.JSONArray
+import org.json.JSONObject
 import java.util.zip.Inflater
 
-class ChatAdapter ( private val messages: ArrayList<ChatMessage>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ChatAdapter ( private val messages: ArrayList<ChatMessage>, val ibChatPrice: ImageButton) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private lateinit var auth: FirebaseAuth
 
 
@@ -28,6 +34,8 @@ class ChatAdapter ( private val messages: ArrayList<ChatMessage>) : RecyclerView
         val tvChatPrice : TextView = itemView.findViewById(R.id.tvChatPrice)
         val btnChatPriceAccept : Button = itemView.findViewById(R.id.btnChatPriceAccept)
         val btnChatPriceReject : Button = itemView.findViewById(R.id.btnChatPriceReject)
+        val tvChatPriceNotResponse : TextView = itemView.findViewById(R.id.tvChatPriceNotResponse)
+        val tvChatPricePropu : TextView = itemView.findViewById(R.id.tvChatPricePropu)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -84,15 +92,53 @@ class ChatAdapter ( private val messages: ArrayList<ChatMessage>) : RecyclerView
                 holder.tvChatMsg.text = messages[position].message
             }
             is PriceMessageViewHolder -> {
-                holder.tvChatPrice.text = "S/${messages[position].message}"
-                holder.btnChatPriceAccept.setOnClickListener {
+                if (messages[position].message.get(0) == '{') {
+                    var gson = Gson()
+                    Log.i("ddd", messages[position].message)
+                    var agreement = gson.fromJson(messages[position].message, Agreement::class.java)
 
+                    holder.tvChatPrice.text = "S/${agreement.price}"
+
+                    when(agreement.isAccepted){
+                        0 -> {
+                            // NO HA SIDO RESPONDIDO
+                        }
+                        1 -> {
+                            // ACEPTADO
+                            holder.btnChatPriceAccept.visibility = View.GONE
+                            holder.btnChatPriceReject.visibility = View.GONE
+                            holder.tvChatPricePropu.text = "Propuesta Aceptada"
+                            ibChatPrice.visibility = View.GONE
+                        }
+                        2 -> {
+                            // RECHAZADO
+                            holder.btnChatPriceAccept.visibility = View.GONE
+                            holder.btnChatPriceReject.visibility = View.GONE
+                            holder.tvChatPricePropu.text = "Propuesta Rechazada"
+
+
+                        }
+                    }
+
+                    if (agreement.emitter == auth.uid){
+                        holder.btnChatPriceAccept.visibility = View.INVISIBLE
+                        holder.btnChatPriceReject.visibility = View.INVISIBLE
+                        holder.tvChatPriceNotResponse.visibility = View.VISIBLE
+                        holder.tvChatPricePropu.text = "Has enviado una propuesta de:"
+                    } else {
+                        if (holder.btnChatPriceAccept.visibility == View.VISIBLE)
+                            holder.btnChatPriceAccept.setOnClickListener {
+                                Toast.makeText(holder.btnChatPriceAccept.context, "ACEPTADO", Toast.LENGTH_LONG).show()
+                            }
+                        if (holder.btnChatPriceReject.visibility == View.VISIBLE)
+                            holder.btnChatPriceReject.setOnClickListener {
+                                Toast.makeText(holder.btnChatPriceAccept.context, "RECHAZADO", Toast.LENGTH_LONG).show()
+                            }
+                    }
                 }
 
-                holder.btnChatPriceReject.setOnClickListener {
-
-                }
             }
         }
     }
+
 }
