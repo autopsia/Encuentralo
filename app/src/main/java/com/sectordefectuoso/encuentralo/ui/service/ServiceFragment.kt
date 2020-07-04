@@ -18,7 +18,6 @@ import com.sectordefectuoso.encuentralo.domain.service.ServiceUC
 import com.sectordefectuoso.encuentralo.utils.BaseFragment
 import com.sectordefectuoso.encuentralo.utils.ResourceState
 import com.sectordefectuoso.encuentralo.viewmodel.ServiceViewModelFactory
-import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_service.*
 import kotlinx.android.synthetic.main.fragment_service.*
 
@@ -57,7 +56,7 @@ class ServiceFragment : BaseFragment() {
     }
 
     private fun observeData(){
-        viewModel.getServices.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.getServices().observe(viewLifecycleOwner, Observer { result ->
             when(result){
                 is ResourceState.Loading -> {
                     Log.i("SERVICIOS ", "Cargando")
