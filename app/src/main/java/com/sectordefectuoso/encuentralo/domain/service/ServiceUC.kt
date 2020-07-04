@@ -13,4 +13,6 @@ class ServiceUC(private val repo: IServiceRepo) : IServiceUC {
     override suspend fun create(service: Service): Flow<ResourceState<String>> = repo.create(service)
 
     override suspend fun update(service: Service): Flow<ResourceState<String>> = repo.update(service)
+
+    override suspend fun listByIds(ids: List<String>): Flow<ResourceState<List<Service>>> = repo.listByIds(ids)
 }

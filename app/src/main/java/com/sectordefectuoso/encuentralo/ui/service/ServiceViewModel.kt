@@ -13,7 +13,7 @@ import java.lang.Exception
 class ServiceViewModel(private val serviceUC: IServiceUC) : ViewModel() {
     private val coroutineContext = viewModelScope.coroutineContext + Dispatchers.IO
 
-    val getServices = liveData(coroutineContext) {
+    fun getServices() = liveData(coroutineContext) {
         emit(ResourceState.Loading)
         try {
             serviceUC.listByUser().collect {

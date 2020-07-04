@@ -9,4 +9,5 @@ interface IServiceUC {
     suspend fun getById(uid: String): ResourceState<Service>
     suspend fun create(service: Service): Flow<ResourceState<String>>
     suspend fun update(service: Service): Flow<ResourceState<String>>
+    suspend fun listByIds(ids: List<String>): Flow<ResourceState<List<Service>>>
 }

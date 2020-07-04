@@ -4,6 +4,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.SetOptions
+import com.google.firebase.ktx.Firebase
 import com.google.gson.Gson
 import com.sectordefectuoso.encuentralo.data.model.Service
 import com.sectordefectuoso.encuentralo.utils.ResourceState
@@ -16,7 +17,8 @@ import kotlinx.coroutines.tasks.await
 class ServiceRepo : IServiceRepo {
     private val auth = FirebaseAuth.getInstance()
     private val userAuth = auth.currentUser
-    private val serviceRef = FirebaseFirestore.getInstance().collection("services")
+    private val db = FirebaseFirestore.getInstance()
+    private val serviceRef = db.collection("services")
 
     override suspend fun listByUser(): Flow<ResourceState<List<Service>>> = callbackFlow {
         val uid = userAuth?.uid
@@ -75,5 +77,17 @@ class ServiceRepo : IServiceRepo {
 
         serviceRef.document(service.documentId).set(serviceMap, SetOptions.merge()).await()
         emit(ResourceState.Success(service.documentId))
+    }
+
+    override suspend fun listByIds(ids: List<String>): Flow<ResourceState<List<Service>>> = flow {
+        var services = ArrayList<Service>()
+        for (id in ids){
+            val data = serviceRef.document(id).get().await()
+            val result = data.toObject(Service::class.java)
+            if(result != null) {
+                services.add(result)
+            }
+        }
+        emit(ResourceState.Success(services))
     }
 }
