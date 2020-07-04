@@ -20,11 +20,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.sectordefectuoso.encuentralo.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
-    <fragment
         android:id="@+id/navigation_account"
         android:name="com.sectordefectuoso.encuentralo.ui.profile.account.AccountFragment"
         android:label="@string/title_account"
@@ -109,4 +104,9 @@
             android:name="userId"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/navigation_history"
+        android:name="com.sectordefectuoso.encuentralo.ui.history.HistoryFragment"
+        android:label="Historial"
+        tools:layout="@layout/fragment_history" />
 </navigation>
