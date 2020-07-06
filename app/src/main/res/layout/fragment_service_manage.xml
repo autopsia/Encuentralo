@@ -148,17 +148,36 @@
                     app:layout_constraintStart_toStartOf="@+id/guideline15"
                     app:layout_constraintTop_toBottomOf="@+id/textView34" />
 
-                <ImageView
-                    android:id="@+id/ivServPhoto"
+                <TextView
+                    android:id="@+id/textView38"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Imagen de Referencia:"
+                    android:textColor="#47525E"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="@+id/guideline15"
+                    app:layout_constraintTop_toBottomOf="@+id/txtServDescription" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardView8"
                     android:layout_width="220dp"
                     android:layout_height="220dp"
                     android:layout_marginTop="16dp"
-                    android:adjustViewBounds="true"
-                    android:cropToPadding="true"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/img_default"
+                    app:cardCornerRadius="10dp"
                     app:layout_constraintStart_toStartOf="@+id/guideline15"
-                    app:layout_constraintTop_toBottomOf="@+id/txtServDescription" />
+                    app:layout_constraintTop_toBottomOf="@+id/textView38" >
+
+                    <ImageView
+                        android:id="@+id/ivServPhoto"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:adjustViewBounds="true"
+                        android:cropToPadding="true"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/img_default"
+                        app:srcCompat="@drawable/img_default" />
+                </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/btnServPhoto"
@@ -167,10 +186,10 @@
                     app:cardBackgroundColor="#FF0000"
                     app:cardCornerRadius="25dp"
                     app:contentPadding="10dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/ivServPhoto"
+                    app:layout_constraintBottom_toBottomOf="@+id/cardView8"
                     app:layout_constraintEnd_toStartOf="@+id/guideline16"
-                    app:layout_constraintStart_toEndOf="@+id/ivServPhoto"
-                    app:layout_constraintTop_toTopOf="@+id/ivServPhoto">
+                    app:layout_constraintStart_toEndOf="@+id/cardView8"
+                    app:layout_constraintTop_toTopOf="@+id/cardView8">
 
                     <ImageView
                         android:id="@+id/imageView7"
@@ -184,7 +203,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="32dp"
                     android:layout_marginEnd="24dp"
                     android:layout_marginBottom="16dp"
                     android:background="@drawable/bg_button_rounded"
@@ -194,7 +213,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/guideline16"
                     app:layout_constraintStart_toStartOf="@+id/guideline15"
-                    app:layout_constraintTop_toBottomOf="@+id/ivServPhoto" />
+                    app:layout_constraintTop_toBottomOf="@+id/cardView8" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>

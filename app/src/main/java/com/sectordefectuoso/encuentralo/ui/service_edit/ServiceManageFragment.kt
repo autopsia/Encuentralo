@@ -4,12 +4,12 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
@@ -21,34 +21,26 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
-import com.sectordefectuoso.encuentralo.MainActivity
 import com.sectordefectuoso.encuentralo.R
 import com.sectordefectuoso.encuentralo.data.model.Category
 import com.sectordefectuoso.encuentralo.data.model.Service
 import com.sectordefectuoso.encuentralo.data.model.SubCategory
-import com.sectordefectuoso.encuentralo.data.model.User
 import com.sectordefectuoso.encuentralo.data.repository.category.CategoryRepo
 import com.sectordefectuoso.encuentralo.data.repository.service.ServiceRepo
 import com.sectordefectuoso.encuentralo.data.repository.storage.StorageRepo
 import com.sectordefectuoso.encuentralo.domain.category.CategoryUC
 import com.sectordefectuoso.encuentralo.domain.service.ServiceUC
 import com.sectordefectuoso.encuentralo.domain.storage.StorageUC
-import com.sectordefectuoso.encuentralo.ui.register.service.RegisterServiceViewModel
 import com.sectordefectuoso.encuentralo.utils.BaseFragment
 import com.sectordefectuoso.encuentralo.utils.Functions
 import com.sectordefectuoso.encuentralo.utils.ResourceState
-import com.sectordefectuoso.encuentralo.viewmodel.RegisterServiceViewModelFactory
 import com.sectordefectuoso.encuentralo.viewmodel.ServiceManageViewModelFactory
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_service.*
-import kotlinx.android.synthetic.main.fragment_register_service.*
 import kotlinx.android.synthetic.main.fragment_service_manage.*
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.math.log
-import kotlin.reflect.typeOf
 
 class ServiceManageFragment : BaseFragment() {
 
@@ -65,6 +57,7 @@ class ServiceManageFragment : BaseFragment() {
     private val IMAGE_PICK_CODE = 1001;
     private val IMAGE_CAPTURE_CODE = 1002;
     private var imageUri: Uri? = null
+
     private lateinit var photoFile: File
     private lateinit var alertDialog: AlertDialog
 
@@ -90,6 +83,7 @@ class ServiceManageFragment : BaseFragment() {
         val cboServCategory = root.findViewById<Spinner>(R.id.cboServCategory)
         val btnServPhoto = root.findViewById<CardView>(R.id.btnServPhoto)
         val btnServSave = root.findViewById<Button>(R.id.btnServSave)
+        val txtDescription = root.findViewById<EditText>(R.id.txtServDescription)
 
         loadService(root)
         if(idSubCategory != null) {
@@ -99,6 +93,13 @@ class ServiceManageFragment : BaseFragment() {
             setCategories()
         }
 
+        txtDescription.setOnTouchListener { view, event ->
+            view.parent.requestDisallowInterceptTouchEvent(true)
+            if ((event.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
+                view.parent.requestDisallowInterceptTouchEvent(false)
+            }
+            return@setOnTouchListener false
+        }
         cboServCategory.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 TODO("Not yet implemented")
@@ -137,7 +138,27 @@ class ServiceManageFragment : BaseFragment() {
 
             txtTitle.setText(service.title)
             txtDescription.setText(service.description)
+            loadImage(service.documentId)
         }
+    }
+
+    private fun loadImage(uid: String) {
+        viewModel.loadImage("Service/$uid.jpg")
+            .observe(viewLifecycleOwner, Observer { result ->
+                when (result) {
+                    is ResourceState.Loading -> {
+                        Log.d("LOADING_PHOTO", "Cargando imagen")
+                    }
+                    is ResourceState.Success -> {
+                        val url = result.data
+                        Glide.with(requireContext()).load(url)
+                            .centerCrop().into(ivServPhoto)
+                    }
+                    is ResourceState.Failed -> {
+                        Log.d("ERROR_PHOTO", result.message)
+                    }
+                }
+            })
     }
 
     private fun setCategories(){
@@ -263,7 +284,26 @@ class ServiceManageFragment : BaseFragment() {
         if (Functions.validateTextView(txtServTitle, 15)) valid = false
         if (Functions.validateTextView(txtServDescription, 20)) valid = false
 
+        if(Functions.validateInvalidWords(txtServTitle)) {
+            return showNotification("Validación de Palabras", "La aplicación no permite el ingreso de ciertas palabras")
+        }
+        if(Functions.validateInvalidWords(txtServDescription)) {
+            return showNotification("Validación de Palabras", "La aplicación no permite el ingreso de ciertas palabras")
+        }
+
+        if(idSubCategory == "") {
+            if (imageUri == null) {
+                return showNotification("Validación de Imagen", "Debe subir una foto de referencia del servicio")
+            }
+        }
+
         return valid
+    }
+
+    private fun showNotification(title: String, message: String): Boolean {
+        alertDialog =
+            showAlertDialog(requireContext(), R.layout.alert_dialog_1, title, message, null)
+        return false;
     }
 
     private fun setService(): Service {

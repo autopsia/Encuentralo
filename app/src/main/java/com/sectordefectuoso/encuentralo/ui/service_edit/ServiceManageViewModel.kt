@@ -52,6 +52,17 @@ class ServiceManageViewModel(private val serviceUC: IServiceUC,
         }
     }
 
+    fun loadImage(path: String) = liveData(coroutineContext) {
+        emit(ResourceState.Loading)
+        try {
+            storageUC.loadImage(path).collect {
+                emit(it)
+            }
+        } catch (e: Exception) {
+            emit(ResourceState.Failed(e.message!!))
+        }
+    }
+
     fun uploadImage(uri: Uri, uid: String, path: String) = liveData(coroutineContext) {
         emit(ResourceState.Loading)
         try {
