@@ -190,12 +190,12 @@ class RegisterUserFragment : BaseFragment() {
         var valid = true
         if (Functions.validateTextView(txtUserName)) valid = false
         if (Functions.validateTextView(txtUserLastName)) valid = false
-        if (Functions.validateTextView(txtUserBirthdate)) valid = false
         if (Functions.validateTextView(txtUserPhone)) valid = false
         if (Functions.validateTextView(txtUserEmail)) valid = false
         if (Functions.validateTextView(txtUserPassword)) valid = false
 
         if (type == "2") {
+            if (Functions.validateTextView(txtUserBirthdate)) valid = false
             if (Functions.validateTextView(txtUserDocument, 8)) {
                 return showNotification("Validación de Campos", "Ingrese un documento válido")
             }
