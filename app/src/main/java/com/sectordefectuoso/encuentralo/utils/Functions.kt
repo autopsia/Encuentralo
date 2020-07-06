@@ -3,6 +3,7 @@ package com.sectordefectuoso.encuentralo.utils
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.Context
+import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
@@ -11,32 +12,28 @@ import android.view.animation.RotateAnimation
 import android.view.inputmethod.InputMethodManager
 import android.widget.Spinner
 import android.widget.TextView
-import androidx.lifecycle.LifecycleOwner
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuthException
 import com.sectordefectuoso.encuentralo.R
-import io.grpc.KnownLength
 import kotlinx.android.synthetic.main.alert_dialog_1.view.*
 import kotlinx.android.synthetic.main.alert_dialog_2.view.*
 import kotlinx.android.synthetic.main.alert_dialog_3.view.*
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.LocalDateTime
 import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
-
 class Functions {
     companion object {
         const val DB_FAIL = "Fallo en el registro de la base de datos"
         const val AUTH_FAIL = "Fallo en el registro de autenticación"
+        private val invalidWords = listOf("sicario", "sicariato", "muerte", "matar", "sexo", "sexual", "violar", "violación")
 
         fun validateSpinner(spinner: Spinner): Boolean {
             val text = spinner.selectedItem.toString()
 
-            return if (text.isEmpty() || text.toLowerCase().equals("seleccione")) {
+            return if (text.isEmpty() || text.toLowerCase() == "seleccione") {
                 spinner.setBackgroundResource(R.drawable.bg_spinner_error_rounded)
                 true
             } else {
@@ -231,8 +228,43 @@ class Functions {
             createDialog(contex, R.layout.alert_dialog_1, title, message, null)!!
         }
 
-        fun convertTime(itemTime : Date){
+        fun createDialog2(contex: Context, title: String, message: String, btn1: String, btn2: String, funOk: (() -> Unit)?, funCancel: (() -> Unit)?) {
+            val dialog = LayoutInflater.from(contex).inflate(R.layout.alert_dialog_3, null)
+            val builder = AlertDialog.Builder(contex).setView(dialog)
+            val alert = builder.show()
 
+            alert.window?.setBackgroundDrawable(ColorDrawable(0))
+            dialog.lblDialog3Title.text = title
+            dialog.lblDialog3Message.visibility = View.GONE
+            dialog.btnDialog3Yes.text = btn1
+            dialog.btnDialog3No.text = btn2
+            dialog.btnDialog3No.setBackgroundResource(R.drawable.bg_button_rounded)
+            dialog.btnDialog3No.setTextColor(Color.parseColor("#FFFFFF"))
+
+            dialog.btnDialog3Yes.setOnClickListener {
+                if (funOk != null) {
+                    funOk()
+                }
+                alert.dismiss()
+            }
+            dialog.btnDialog3No.setOnClickListener {
+                if(funCancel != null){
+                    funCancel()
+                }
+                alert.dismiss()
+            }
+        }
+
+        fun validateInvalidWords(textView: TextView): Boolean {
+            val text = textView.text.toString().trim().toLowerCase()
+            val words = text.split(" ")
+            return if(words.any(invalidWords::contains)){
+                textView.setBackgroundResource(R.drawable.bg_textview_error_rounded)
+                true
+            } else{
+                textView.setBackgroundResource(R.drawable.bg_textview_rounded)
+                false
+            }
         }
     }
 }

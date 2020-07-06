@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
@@ -48,7 +49,16 @@ class LoginFragment : Fragment() {
             nav_login_fragment.findNavController().navigate(R.id.action_loginFragment_to_recoverFragment)
         }
         lblLoginSignIn.setOnClickListener{
-            nav_login_fragment.findNavController().navigate(R.id.action_loginFragment_to_registerUserFragment)
+            var bundle = Bundle()
+            val fun1 = {
+                bundle = bundleOf("type" to "1")
+                nav_login_fragment.findNavController().navigate(R.id.action_loginFragment_to_registerUserFragment, bundle)
+            }
+            val fun2 = {
+                bundle = bundleOf("type" to "2")
+                nav_login_fragment.findNavController().navigate(R.id.action_loginFragment_to_registerUserFragment, bundle)
+            }
+            Functions.createDialog2(requireContext(), "¿Deseas registrarte como?", "", "Cliente", "Ofertante", fun1, fun2)
         }
     }
 

@@ -200,12 +200,28 @@ class RegisterServiceFragment : BaseFragment() {
 
     private fun validate(): Boolean {
         var valid = true
-        if (Functions.validateSpinner(cboServiceCategory)) valid = false
         if (Functions.validateSpinner(cboServiceSubcategory)) valid = false
         if (Functions.validateTextView(txtServiceTitle, 15)) valid = false
         if (Functions.validateTextView(txtServiceDescription, 20)) valid = false
 
+        if(Functions.validateInvalidWords(txtServiceTitle)) {
+            return showNotification("Validación de Palabras", "La aplicación no permite el ingreso de ciertas palabras")
+        }
+        if(Functions.validateInvalidWords(txtServiceDescription)) {
+            return showNotification("Validación de Palabras", "La aplicación no permite el ingreso de ciertas palabras")
+        }
+
+        if (imageUri == null) {
+            return showNotification("Validación de Imagen", "Debe subir una foto de referencia del servicio")
+        }
+
         return valid
+    }
+
+    private fun showNotification(title: String, message: String): Boolean {
+        alertDialog =
+            showAlertDialog(requireContext(), R.layout.alert_dialog_1, title, message, null)
+        return false;
     }
 
     private fun setUser(): User {
@@ -236,7 +252,7 @@ class RegisterServiceFragment : BaseFragment() {
                     }
                     is ResourceState.Success -> {
                         user.documentId = result.data
-                        uploadImage(user, service)
+                        uploadImageUser(user, service)
                     }
                     is ResourceState.Failed -> {
                         Functions.showAlert(
@@ -250,8 +266,9 @@ class RegisterServiceFragment : BaseFragment() {
             })
     }
 
-    private fun uploadImage(user: User, service: Service) {
-        viewModel.uploadImage(imageUri, user.documentId, "User").observe(viewLifecycleOwner, Observer { result ->
+    private fun uploadImageUser(user: User, service: Service) {
+        val imageUser = Uri.parse(arguments?.get("imageUser").toString())
+        viewModel.uploadImage(imageUser, user.documentId, "User").observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is ResourceState.Success -> {
                     createUser(user, service)
@@ -293,6 +310,26 @@ class RegisterServiceFragment : BaseFragment() {
         viewModel.saveDB(service).observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is ResourceState.Success -> {
+                    val serviceId = result.data
+                    uploadImageService(serviceId)
+                }
+                is ResourceState.Failed -> {
+                    hideAlertDialog(alertDialog)
+                    Functions.showAlert(
+                        requireActivity(),
+                        alertDialog,
+                        "Atención",
+                        Functions.DB_FAIL
+                    )
+                }
+            }
+        })
+    }
+
+    private fun uploadImageService(serviceId: String) {
+        viewModel.uploadImage(imageUri, serviceId, "Service").observe(viewLifecycleOwner, Observer { result ->
+            when (result) {
+                is ResourceState.Success -> {
                     hideAlertDialog(alertDialog)
                     val intent = Intent(requireContext(), MainActivity::class.java)
                     startActivity(intent)
@@ -304,7 +341,7 @@ class RegisterServiceFragment : BaseFragment() {
                         requireActivity(),
                         alertDialog,
                         "Atención",
-                        Functions.DB_FAIL
+                        "No se pudo subir su imagen"
                     )
                 }
             }

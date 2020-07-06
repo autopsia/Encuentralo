@@ -50,8 +50,10 @@ class ChatListFragment : BaseFragment() {
                 }
                 is ResourceState.Success -> {
                     val chatList : ChatList? = result.data
-                    val adapter = ChatListAdapter(chatList?.chatList as ArrayList<String>, args.serviceId, args.userId)
-                    rvChatList.adapter = adapter
+                    if(chatList != null) {
+                        val adapter = ChatListAdapter(chatList?.chatList as ArrayList<String>, args.serviceId, args.userId)
+                        rvChatList.adapter = adapter
+                    }
                     Log.i(TAG + "success", result.data.toString())
                 }
                 is ResourceState.Failed -> {
