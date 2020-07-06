@@ -76,7 +76,6 @@ class AccountFragment : BaseFragment() {
             var callbackOk: (() -> Unit)? = {
                 val intent = Intent(requireContext(), ServiceActivity::class.java)
                 startActivity(intent)
-                requireActivity().finish()
             }
             val title = "¿Desea ingresar al módulo de servicio?"
             val message = "Aqui podrá administrar los servicios que ofrece"
