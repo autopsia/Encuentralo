@@ -21,6 +21,7 @@ import com.sectordefectuoso.encuentralo.data.repository.storage.StorageRepo
 import com.sectordefectuoso.encuentralo.data.repository.user.UserRepo
 import com.sectordefectuoso.encuentralo.domain.storage.StorageUC
 import com.sectordefectuoso.encuentralo.domain.user.UserUC
+import com.sectordefectuoso.encuentralo.ui.validate.ValidateActivity
 import com.sectordefectuoso.encuentralo.utils.BaseFragment
 import com.sectordefectuoso.encuentralo.utils.Functions
 import com.sectordefectuoso.encuentralo.utils.ResourceState
@@ -69,8 +70,15 @@ class AccountFragment : BaseFragment() {
         }
         fabService.setOnClickListener {
             var callbackOk: (() -> Unit)? = {
-                val intent = Intent(requireContext(), ServiceActivity::class.java)
-                startActivity(intent)
+                if(user!!.document.isNullOrEmpty()) {
+                    val intent = Intent(requireContext(), ValidateActivity::class.java)
+                    intent.putExtra("user", Gson().toJson(user!!))
+                    startActivity(intent)
+                }
+                else {
+                    val intent = Intent(requireContext(), ServiceActivity::class.java)
+                    startActivity(intent)
+                }
             }
             val title = "¿Desea ingresar al módulo de servicio?"
             val message = "Aqui podrá administrar los servicios que ofrece"
@@ -79,16 +87,22 @@ class AccountFragment : BaseFragment() {
     }
 
     private fun showInputs(root: View, user: User) {
-        if(user != null && user.document.isNullOrEmpty()) {
-            val lblDoc = root.findViewById<TextView>(R.id.textView19)
-            val lblDocV = root.findViewById<TextView>(R.id.lblAccountDocument)
-            val lblBirthdate = root.findViewById<TextView>(R.id.textView23)
-            val lblBirthdateV = root.findViewById<TextView>(R.id.lblAccountBirthdate)
+        val lblDoc = root.findViewById<TextView>(R.id.textView19)
+        val lblDocV = root.findViewById<TextView>(R.id.lblAccountDocument)
+        val lblBirthdate = root.findViewById<TextView>(R.id.textView23)
+        val lblBirthdateV = root.findViewById<TextView>(R.id.lblAccountBirthdate)
 
+        if(user != null && user.document.isNullOrEmpty()) {
             lblDoc.visibility = View.GONE
             lblDocV.visibility = View.GONE
             lblBirthdate.visibility = View.GONE
             lblBirthdateV.visibility = View.GONE
+        }
+        else{
+            lblDoc.visibility = View.VISIBLE
+            lblDocV.visibility = View.VISIBLE
+            lblBirthdate.visibility = View.VISIBLE
+            lblBirthdateV.visibility = View.VISIBLE
         }
     }
 
@@ -154,4 +168,6 @@ class AccountFragment : BaseFragment() {
             }
         })
     }
+
+
 }

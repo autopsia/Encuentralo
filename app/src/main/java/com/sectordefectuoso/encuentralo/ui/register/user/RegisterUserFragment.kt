@@ -352,12 +352,12 @@ class RegisterUserFragment : BaseFragment() {
                 val cui = txtUserCui.text.toString()
                 val cuiResult = jsonObject.getString("cui")
 
-                if (cui == cuiResult) {
+                validDoc = if (cui == cuiResult) {
                     btnUserSearch.setColorFilter(Color.parseColor("#25F800"))
-                    validDoc = true
+                    true
                 } else {
                     btnUserSearch.setColorFilter(Color.parseColor("#FF0000"))
-                    validDoc = false
+                    false
                 }
             }
 
