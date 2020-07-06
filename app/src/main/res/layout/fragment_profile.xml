@@ -118,6 +118,8 @@
                     android:layout_marginTop="4dp"
                     android:background="@drawable/bg_textview_rounded"
                     android:ems="10"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
                     android:inputType="number"
                     app:layout_constraintEnd_toStartOf="@+id/guideline12"
                     app:layout_constraintStart_toStartOf="@+id/guideline11"

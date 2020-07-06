@@ -11,6 +11,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.TextView
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
@@ -56,10 +58,12 @@ class ProfileFragment : BaseFragment() {
             ProfileViewModelFactory(UserUC(UserRepo()), StorageUC(StorageRepo()))
         ).get(ProfileViewModel::class.java)
     }
-    private lateinit var alertDialog: AlertDialog
     private var userBundle: User = User()
-    private lateinit var photoFile: File
     private var imageUri: Uri? = null
+    private var type = "2"
+
+    private lateinit var alertDialog: AlertDialog
+    private lateinit var photoFile: File
 
     override val TAG: String get() = "ProfileFragment"
 
@@ -69,8 +73,9 @@ class ProfileFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        var view = inflater.inflate(getLayout(), container, false)
-        return view
+        var root = inflater.inflate(getLayout(), container, false)
+        showInputs(root)
+        return root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -98,8 +103,23 @@ class ProfileFragment : BaseFragment() {
         }
     }
 
-    private fun setInformation() {
+    private fun showInputs(root: View) {
         userBundle = Gson().fromJson(arguments?.getString("user"), User::class.java)
+        if(userBundle.document.isNullOrEmpty()) {
+            val lblDoc = root.findViewById<TextView>(R.id.textView17)
+            val txtDoc = root.findViewById<EditText>(R.id.txtAccountDocument)
+            val lblBirthdate = root.findViewById<TextView>(R.id.textView22)
+            val txtBirthdate = root.findViewById<EditText>(R.id.txtAccountBirthdate)
+
+            lblDoc.visibility = View.GONE
+            txtDoc.visibility = View.GONE
+            lblBirthdate.visibility = View.GONE
+            txtBirthdate.visibility = View.GONE
+            type = "1"
+        }
+    }
+
+    private fun setInformation() {
         txtAccountDocument.setText(userBundle.document)
         txtAccountName.setText(userBundle.names)
         txtAccountLastName.setText(userBundle.lastNames)
@@ -167,28 +187,19 @@ class ProfileFragment : BaseFragment() {
 
     private fun validate(): Boolean {
         var valid = true
-        if (Functions.validateTextView(txtAccountDocument)) valid = false
         if (Functions.validateTextView(txtAccountName)) valid = false
         if (Functions.validateTextView(txtAccountLastName)) valid = false
-        if (Functions.validateTextView(txtAccountBirthdate)) valid = false
         if (Functions.validateTextView(txtAccountPhone)) valid = false
 
-        if (Functions.validateTextView(
-                txtAccountDocument,
-                8
-            )
-        ) return showNotification("Validación de Campos", "Ingrese un documento válido")
-        if (Functions.validateTextViewDate(
-                txtAccountBirthdate,
-                Date(),
-                6570
-            )
-        ) return showNotification("Validación de Campos", "Debes ser mayor de edad")
-        if (Functions.validateTextView(
-                txtAccountPhone,
-                9
-            )
-        ) return showNotification("Validación de Campos", "Ingrese un celular válido")
+        if(type == "2") {
+            if (Functions.validateTextView(txtAccountBirthdate)) valid = false
+            if (Functions.validateTextViewDate(txtAccountBirthdate, Date(), 6570)) {
+                return showNotification("Validación de Campos", "Debes ser mayor de edad")
+            }
+            if (Functions.validateTextView(txtAccountPhone, 9)) {
+                return showNotification("Validación de Campos", "Ingrese un celular válido")
+            }
+        }
 
         return valid
     }
