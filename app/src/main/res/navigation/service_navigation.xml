@@ -15,13 +15,31 @@
             app:destination="@id/serviceManageFragment" />
     </fragment>
     <fragment
-        android:id="@+id/navigation_service_history"
-        android:name="com.sectordefectuoso.encuentralo.ui.service_history.ServiceHistoryFragment"
-        android:label="@string/title_service_history"
-        tools:layout="@layout/fragment_service_history" />
-    <fragment
         android:id="@+id/serviceManageFragment"
         android:name="com.sectordefectuoso.encuentralo.ui.service_edit.ServiceManageFragment"
         android:label="Servicio"
         tools:layout="@layout/fragment_service_manage" />
+    <fragment
+        android:id="@+id/navigation_service_historial"
+        android:name="com.sectordefectuoso.encuentralo.ui.service_history.ServiceHistoryFragment"
+        android:label="@string/title_service_history"
+        tools:layout="@layout/fragment_service_history" >
+        <action
+            android:id="@+id/action_navigation_service_historial_to_chatFragment2"
+            app:destination="@id/chatFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/chatFragment2"
+        android:name="com.sectordefectuoso.encuentralo.ui.home.chat.ChatFragment"
+        android:label="Chat" >
+        <argument
+            android:name="serviceId"
+            app:argType="string" />
+        <argument
+            android:name="sellerId"
+            app:argType="string" />
+        <argument
+            android:name="userId"
+            app:argType="string" />
+    </fragment>
 </navigation>

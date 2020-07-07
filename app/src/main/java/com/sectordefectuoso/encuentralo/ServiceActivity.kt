@@ -18,7 +18,7 @@ class ServiceActivity : AppCompatActivity() {
         val navView: BottomNavigationView = findViewById(R.id.nav_service_view)
         val navController = findNavController(R.id.nav_host_service)
         val appBarConfiguration = AppBarConfiguration(setOf(
-            R.id.navigation_service, R.id.navigation_service_history))
+            R.id.navigation_service, R.id.navigation_service_historial))
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
         supportActionBar?.setDisplayHomeAsUpEnabled(true);
