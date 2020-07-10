@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.liveData
@@ -71,13 +72,22 @@ class ChatFragment : BaseFragment() {
             Log.i(TAG, "IBCHATSEND")
             if (etChat.text.isEmpty()){return@setOnClickListener}
             //TODO: FALTA VALIDAR SOLO NUMBEROS
-            var jsonString = "{\"emitter\": \"${auth.uid}\",\"receptor\": \"\",\"price\": ${etChat.text.toString()},\"isAccepted\": 0}"
-            var message:ChatMessage = ChatMessage("", jsonString, Date(), auth.uid ?: "", 2)
-            Log.i(TAG, message.toString())
-            uiScope.launch {
-                sendMessage(message)
+            var numeros = etChat.text.toString().toFloatOrNull()
+            when (numeros) {
+                null -> {
+                    Toast.makeText(ibChatPrice.context, "Texto ingresado no es un numero, por favor ingrese numero", Toast.LENGTH_LONG).show()
+                }
+                else -> {
+                    var jsonString = "{\"emitter\": \"${auth.uid}\",\"receptor\": \"\",\"price\": ${etChat.text.toString()},\"isAccepted\": 0}"
+                    var message:ChatMessage = ChatMessage("", jsonString, Date(), auth.uid ?: "", 2)
+                    Log.i(TAG, message.toString())
+                    uiScope.launch {
+                        sendMessage(message)
+                    }
+                    etChat.text.clear()
+                }
             }
-            etChat.text.clear()
+
         }
 
         return root
