@@ -16,11 +16,15 @@ import com.sectordefectuoso.encuentralo.data.model.Agreement
 import com.sectordefectuoso.encuentralo.data.model.ChatMessage
 import org.json.JSONArray
 import org.json.JSONObject
+import java.util.*
 import java.util.zip.Inflater
+import kotlin.collections.ArrayList
 
-class ChatAdapter ( private val messages: ArrayList<ChatMessage>, val ibChatPrice: ImageButton) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ChatAdapter (private val messages: ArrayList<ChatMessage>, val ibChatPrice: ImageButton,val listener: PriceMessageViewHolderListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private lateinit var auth: FirebaseAuth
-
+    interface PriceMessageViewHolderListener {
+        fun onChatItemClicked(agreement: Agreement, message: ChatMessage, status: Int)
+    }
 
     inner class Message1ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvChatMsg : TextView = itemView.findViewById(R.id.tvChatMsg1)
@@ -128,12 +132,16 @@ class ChatAdapter ( private val messages: ArrayList<ChatMessage>, val ibChatPric
                     } else {
                         if (holder.btnChatPriceAccept.visibility == View.VISIBLE)
                             holder.btnChatPriceAccept.setOnClickListener {
-                                Toast.makeText(holder.btnChatPriceAccept.context, "ACEPTADO", Toast.LENGTH_LONG).show()
+                                listener.onChatItemClicked(agreement, messages[position], 1)
                             }
                         if (holder.btnChatPriceReject.visibility == View.VISIBLE)
                             holder.btnChatPriceReject.setOnClickListener {
-                                Toast.makeText(holder.btnChatPriceAccept.context, "RECHAZADO", Toast.LENGTH_LONG).show()
+                                listener.onChatItemClicked(agreement, messages[position], 2)
                             }
+                    }
+
+                    fun asd(mensaje: String){
+
                     }
                 }
 

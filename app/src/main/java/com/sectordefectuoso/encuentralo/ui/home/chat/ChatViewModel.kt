@@ -26,6 +26,12 @@ chatRepository: ChatRepository,
         message = _message
         Log.i("ChatviewModel",message.toString())
     }
+    var message2 : ChatMessage = ChatMessage()
+
+    fun settearMessage2(_message2: ChatMessage){
+        message2 = _message2
+        Log.i("ChatviewModel",message2.toString())
+    }
 
 
     val getChatMessages = liveData(Dispatchers.IO){
@@ -35,4 +41,5 @@ chatRepository: ChatRepository,
     }
 
     fun sendChatMessage() = chatRepository.sendMessage(getServiceId(),getUserId(),message)
+    fun acceptAgreement() = chatRepository.setAgreement(getServiceId(), message2)
 }

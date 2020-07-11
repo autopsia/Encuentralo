@@ -14,7 +14,9 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.gson.Gson
 import com.sectordefectuoso.encuentralo.R
+import com.sectordefectuoso.encuentralo.data.model.Agreement
 import com.sectordefectuoso.encuentralo.data.model.ChatMessage
 import com.sectordefectuoso.encuentralo.ui.home.adapter.ChatAdapter
 import com.sectordefectuoso.encuentralo.ui.home.postlist.PostListFragmentArgs
@@ -41,6 +43,29 @@ class ChatFragment : BaseFragment() {
 
     override fun getLayout(): Int {
         return R.layout.fragment_chat
+    }
+
+    val listener = object : ChatAdapter.PriceMessageViewHolderListener {
+        override fun onChatItemClicked(agreement: Agreement, message: ChatMessage, status:Int) {
+            var gson = Gson()
+
+            when (status) {
+                1 -> {
+                    agreement.isAccepted = 1
+                }
+                2 -> {
+                    agreement.isAccepted = 2
+                }
+            }
+
+            var mensaje : String = gson.toJson(agreement)
+            message.message = mensaje
+            chatViewModel.settearMessage2(message)
+            uiScope.launch {
+                setAgreement()
+            }
+        }
+
     }
 
     override fun onCreateView(
@@ -101,7 +126,7 @@ class ChatFragment : BaseFragment() {
                     Log.i(TAG, result.toString())
                 }
                 is ResourceState.Success -> {
-                    val adapter = ChatAdapter(result.data as ArrayList<ChatMessage>, ibChatPrice)
+                    val adapter = ChatAdapter(result.data as ArrayList<ChatMessage>, ibChatPrice, listener)
                     rvChat.adapter = adapter
                     rvChat.scrollToPosition((rvChat.adapter?.itemCount ?: 1) - 1)
                     Log.i(TAG, result.data.toString())
@@ -118,6 +143,24 @@ class ChatFragment : BaseFragment() {
         chatViewModel.settearMessage(message)
         chatViewModel.sendChatMessage().collect { state ->
             when(state){
+                is ResourceState.Loading -> {
+                    Log.i(TAG, state.toString())
+                }
+                is ResourceState.Success -> {
+                    Log.i(TAG, state.data.toString())
+                    rvChat.scrollToPosition((rvChat.adapter?.itemCount ?: 1) - 1)
+
+                }
+                is ResourceState.Failed -> {
+                    Log.e(TAG, state.message)
+                }
+            }
+        }
+    }
+
+    private suspend fun setAgreement(){
+        chatViewModel.acceptAgreement().collect { state ->
+            when (state) {
                 is ResourceState.Loading -> {
                     Log.i(TAG, state.toString())
                 }

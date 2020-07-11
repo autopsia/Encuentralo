@@ -80,11 +80,13 @@ class ChatRepository @Inject constructor() {
 
     }
 
-    fun updateMessage(serviceId: String,userId:String, chatMessage: ChatMessage) : Flow<ResourceState<Boolean>> = flow {
+    fun setAgreement(serviceId: String, chatMessage: ChatMessage) : Flow<ResourceState<Boolean>> = flow {
 
         try {
             if (chatMessage.message.isNotEmpty()) {
-                chatRef.document(serviceId).collection(userId).document(chatMessage.documentId).update("message", chatMessage.message)
+                Log.i("setAgreement!!", serviceId)
+                Log.i("setAgreement", chatMessage.toString())
+                chatRef.document(serviceId).collection(chatMessage.author).document(chatMessage.documentId).update("message", chatMessage.message)
                 emit(ResourceState.Success(true))
             } else {
                 throw Exception("No se pudo registrar en la base de datos")
